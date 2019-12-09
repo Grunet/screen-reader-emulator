@@ -1,0 +1,8 @@
+{
+    "supportedScreenReaders": {
+        "NVDA": {
+            "supportedPlatforms": ["Windows"]
+        }
+    },
+    "version": "0.0.1"
+}
