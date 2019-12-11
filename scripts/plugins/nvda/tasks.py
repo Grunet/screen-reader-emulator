@@ -9,38 +9,38 @@ import json
 
 @task
 def clean(c):
-    outDir = getOutDir()
+    outDir = __getOutDir()
     if outDir.is_dir():
         shutil.rmtree(outDir)
 
 @task(pre=[clean])
 def build(c):
-    outDir = getOutDir()
+    outDir = __getOutDir()
     outDir.mkdir(parents=True)
         
-    pkgDir = getPackageDir()
+    pkgDir = __getPackageDir()
     
-    copySourceFiles(outDir, pkgDir/"src")
+    __copySourceFiles(outDir, pkgDir/"src")
     
-    readMeOutFilename = convertReadMeToHtml(outDir, pkgDir/"readme.md")
+    readMeOutFilename = __convertReadMeToHtml(outDir, pkgDir/"readme.md")
     
-    updateManifestPlaceholders(outDir, pkgDir/"manifest.ini", readMeOutFilename, getVersionNumber())
+    __updateManifestPlaceholders(outDir, pkgDir/"manifest.ini", readMeOutFilename, getVersionNumber())
     
-def getOutDir():
+def __getOutDir():
     taskDir = Path(__file__).parent
     outDir = Path(*["out" if part=="scripts" else part for part in taskDir.parts])
     return outDir
 
-def getPackageDir():
+def __getPackageDir():
     taskDir = Path(__file__).parent
     pkgDir = Path(*["packages" if part=="scripts" else part for part in taskDir.parts])
     return pkgDir
     
-def copySourceFiles(outDir, srcDir):
+def __copySourceFiles(outDir, srcDir):
     pluginDir = outDir/"globalPlugins"
     shutil.copytree(srcDir, pluginDir)
     
-def convertReadMeToHtml(outDir, readMeSrcPath):
+def __convertReadMeToHtml(outDir, readMeSrcPath):
     outFilename = readMeSrcPath.with_suffix('.html').name
     
     readMeOutPath = outDir/"doc"/"en"/outFilename
@@ -51,7 +51,7 @@ def convertReadMeToHtml(outDir, readMeSrcPath):
     
     return outFilename
 
-def updateManifestPlaceholders(outDir, manifestSrcPath, readMeOutFilename, versionNumber):
+def __updateManifestPlaceholders(outDir, manifestSrcPath, readMeOutFilename, versionNumber):
     parser = configparser.ConfigParser()
     #Workaround for manifest not having a section header (per https://stackoverflow.com/questions/2885190/using-configparser-to-read-a-file-without-section-name) 
     with open(manifestSrcPath) as stream:
@@ -98,7 +98,7 @@ def findSharedConstantsJson(rootPkgDir):
         return matchesList[0]
     
 def getRootPackagesDir():
-    pkgDirParts = getPackageDir().parts
+    pkgDirParts = __getPackageDir().parts
     index = pkgDirParts.index("packages")
     rootPkgDir = Path(*pkgDirParts[:index+1])
     
