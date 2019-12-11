@@ -26,6 +26,15 @@ def build(c):
     
     updateManifestPlaceholders(outDir, pkgDir/"manifest.ini", readMeOutFilename, getVersionNumber())
     
+def getOutDir():
+    taskDir = Path(__file__).parent
+    outDir = Path(*["out" if part=="scripts" else part for part in taskDir.parts])
+    return outDir
+
+def getPackageDir():
+    taskDir = Path(__file__).parent
+    pkgDir = Path(*["packages" if part=="scripts" else part for part in taskDir.parts])
+    return pkgDir
     
 def copySourceFiles(outDir, srcDir):
     pluginDir = outDir/"globalPlugins"
@@ -60,19 +69,6 @@ def updateManifestPlaceholders(outDir, manifestSrcPath, readMeOutFilename, versi
         fileContents = f.readlines()
     with open(manifestOutPath, 'w') as f:
         f.writelines(fileContents[1:])
-    
-    
-    
-    
-def getOutDir():
-    taskDir = Path(__file__).parent
-    outDir = Path(*["out" if part=="scripts" else part for part in taskDir.parts])
-    return outDir
-
-def getPackageDir():
-    taskDir = Path(__file__).parent
-    pkgDir = Path(*["packages" if part=="scripts" else part for part in taskDir.parts])
-    return pkgDir
 
 
 
