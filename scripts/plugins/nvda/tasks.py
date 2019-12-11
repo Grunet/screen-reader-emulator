@@ -20,28 +20,37 @@ def build(c):
         
     pkgDir = getPackageDir()
     
-    srcDir = pkgDir/"src"
+    copySourceFiles(outDir, pkgDir/"src")
+    
+    readMeOutFilename = convertReadMeToHtml(outDir, pkgDir/"readme.md")
+    
+    updateManifestPlaceholders(outDir, pkgDir/"manifest.ini", readMeOutFilename, getVersionNumber())
+    
+    
+def copySourceFiles(outDir, srcDir):
     pluginDir = outDir/"globalPlugins"
     shutil.copytree(srcDir, pluginDir)
     
-    readMeSrcPath = pkgDir/"readme.md"
+def convertReadMeToHtml(outDir, readMeSrcPath):
+    outFilename = readMeSrcPath.with_suffix('.html').name
     
-    readMeOutFilename = "readme.html"
-    readMeOutPath = outDir/"doc"/"en"/readMeOutFilename
+    readMeOutPath = outDir/"doc"/"en"/outFilename
     readMeOutPath.parent.mkdir(parents=True)
     readMeOutPath.touch()
     
     markdown.markdownFromFile(input=str(readMeSrcPath), output=str(readMeOutPath))
     
-    manifestSrcPath = pkgDir/"manifest.ini"
-    
+    return outFilename
+
+def updateManifestPlaceholders(outDir, manifestSrcPath, readMeOutFilename, versionNumber):
     parser = configparser.ConfigParser()
     #Workaround for manifest not having a section header (per https://stackoverflow.com/questions/2885190/using-configparser-to-read-a-file-without-section-name) 
     with open(manifestSrcPath) as stream:
         parser.read_string("[DUMMY]\n" + stream.read())
     manifestDict = parser['DUMMY']
-    manifestDict['version'] = getVersionNumber()
-    manifestDict['docFileName']=readMeOutFilename
+    
+    manifestDict['version'] = versionNumber
+    manifestDict['docFileName'] = readMeOutFilename
     
     manifestOutPath = outDir/"manifest.ini"
     with open(manifestOutPath, 'w') as f:
