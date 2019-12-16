@@ -53,6 +53,8 @@ def __convertReadMeToHtml(outDir, readMeSrcPath):
 
 def __updateManifestPlaceholders(outDir, manifestSrcPath, readMeOutFilename, versionNumber):
     parser = configparser.ConfigParser()
+    parser.optionxform = str #Override default of converting keys to lowercase (per https://stackoverflow.com/questions/19359556/configparser-reads-capital-keys-and-make-them-lower-case)
+    
     #Workaround for manifest not having a section header (per https://stackoverflow.com/questions/2885190/using-configparser-to-read-a-file-without-section-name) 
     with open(manifestSrcPath) as stream:
         parser.read_string("[DUMMY]\n" + stream.read())
@@ -64,6 +66,7 @@ def __updateManifestPlaceholders(outDir, manifestSrcPath, readMeOutFilename, ver
     manifestOutPath = outDir/"manifest.ini"
     with open(manifestOutPath, 'w') as f:
         parser.write(f)
+        
     #Getting rid of the dummy section header
     with open(manifestOutPath, 'r') as f:
         fileContents = f.readlines()
