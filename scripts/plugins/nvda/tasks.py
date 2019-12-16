@@ -25,6 +25,33 @@ def build(c):
     readMeOutFilename = __convertReadMeToHtml(outDir, pkgDir/"readme.md")
     
     __updateManifestPlaceholders(outDir, pkgDir/"manifest.ini", readMeOutFilename, versionIdentifier.getVersionNumber())
+   
+@task(pre=[build],help={"nvdaConfigPath":"Absolute path to NVDA's configuration directory. Probably under AppData/Roaming"}) 
+def copy(c, nvdaConfigPath):
+    nvdaConfigPathAsStr = nvdaConfigPath
+    nvdaConfigPath = Path(nvdaConfigPathAsStr)
+    
+    addOnsDir = nvdaConfigPath/"addons"
+    if not addOnsDir.is_dir():
+        return
+    
+    parser = configparser.ConfigParser()
+    parser.optionxform = str #Override default of converting keys to lowercase (per https://stackoverflow.com/questions/19359556/configparser-reads-capital-keys-and-make-them-lower-case)
+    
+    outDir = __getOutDir()
+    manifestOutPath = outDir/"manifest.ini"
+    
+    #Workaround for manifest not having a section header (per https://stackoverflow.com/questions/2885190/using-configparser-to-read-a-file-without-section-name) 
+    with open(manifestOutPath) as stream:
+        parser.read_string("[DUMMY]\n" + stream.read())
+    manifestDict = parser['DUMMY']
+    
+    thisPluginsDir = addOnsDir/manifestDict['name']
+    if thisPluginsDir.is_dir():
+        shutil.rmtree(thisPluginsDir)
+    
+    shutil.copytree(outDir, thisPluginsDir)
+    
     
 def __getOutDir():
     taskDir = Path(__file__).parent
