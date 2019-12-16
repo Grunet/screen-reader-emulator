@@ -24,7 +24,10 @@ def __findSharedConstantsJson(rootPkgDir):
         raise FileNotFoundError("No shared constants file could be found.")
     elif len(matchesList) > 1:
         raise FileNotFoundError(
-            "Two or more copies of the share constants file were found. There should only be 1"
+            (
+                "Two or more copies of the share constants file were found."
+                " There should only be 1"
+            )
         )
     else:
         return matchesList[0]

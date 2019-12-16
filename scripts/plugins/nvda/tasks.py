@@ -37,7 +37,10 @@ def build(c):
 @task(
     pre=[build],
     help={
-        "nvdaConfigPath": "Absolute path to NVDA's configuration directory. Probably under AppData/Roaming"
+        "nvdaConfigPath": (
+            "Absolute path to NVDA's configuration directory."
+            "Probably under AppData/Roaming"
+        )
     },
 )
 def copy(c, nvdaConfigPath):
@@ -104,9 +107,12 @@ def __updateManifestPlaceholders(
 
 def __readManifestDictFromFile(manifestPath):
     parser = configparser.ConfigParser()
-    parser.optionxform = str  # Override default of converting keys to lowercase (per https://stackoverflow.com/questions/19359556/configparser-reads-capital-keys-and-make-them-lower-case)
+    # Override default of converting keys to lowercase
+    # per https://stackoverflow.com/questions/19359556/configparser-reads-capital-keys-and-make-them-lower-case # noqa
+    parser.optionxform = str
 
-    # Workaround for manifest not having a section header (per https://stackoverflow.com/questions/2885190/using-configparser-to-read-a-file-without-section-name)
+    # Workaround for manifest not having a section header (
+    # per https://stackoverflow.com/questions/2885190/using-configparser-to-read-a-file-without-section-name) # noqa
     with open(manifestPath) as stream:
         parser.read_string("[DUMMY]\n" + stream.read())
     manifestDict = parser["DUMMY"]
@@ -123,4 +129,3 @@ def __writeManifestDictToFile(destPath, parser):
         fileContents = f.readlines()
     with open(destPath, "w") as f:
         f.writelines(fileContents[1:])
-
