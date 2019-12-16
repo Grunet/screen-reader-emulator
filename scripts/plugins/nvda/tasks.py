@@ -35,18 +35,12 @@ def copy(c, nvdaConfigPath):
     if not addOnsDir.is_dir():
         return
     
-    parser = configparser.ConfigParser()
-    parser.optionxform = str #Override default of converting keys to lowercase (per https://stackoverflow.com/questions/19359556/configparser-reads-capital-keys-and-make-them-lower-case)
-    
     outDir = __getOutDir()
-    manifestOutPath = outDir/"manifest.ini"
     
-    #Workaround for manifest not having a section header (per https://stackoverflow.com/questions/2885190/using-configparser-to-read-a-file-without-section-name) 
-    with open(manifestOutPath) as stream:
-        parser.read_string("[DUMMY]\n" + stream.read())
-    manifestDict = parser['DUMMY']
+    manifestDict, _ = __readManifestDictFromFile(outDir/"manifest.ini")
+    pluginName = manifestDict['name']
     
-    thisPluginsDir = addOnsDir/manifestDict['name']
+    thisPluginsDir = addOnsDir/pluginName
     if thisPluginsDir.is_dir():
         shutil.rmtree(thisPluginsDir)
     
@@ -79,26 +73,34 @@ def __convertReadMeToHtml(outDir, readMeSrcPath):
     return outFilename
 
 def __updateManifestPlaceholders(outDir, manifestSrcPath, readMeOutFilename, versionNumber):
-    parser = configparser.ConfigParser()
-    parser.optionxform = str #Override default of converting keys to lowercase (per https://stackoverflow.com/questions/19359556/configparser-reads-capital-keys-and-make-them-lower-case)
-    
-    #Workaround for manifest not having a section header (per https://stackoverflow.com/questions/2885190/using-configparser-to-read-a-file-without-section-name) 
-    with open(manifestSrcPath) as stream:
-        parser.read_string("[DUMMY]\n" + stream.read())
-    manifestDict = parser['DUMMY']
+    manifestDict, parser = __readManifestDictFromFile(manifestSrcPath)
     
     manifestDict['version'] = versionNumber
     manifestDict['docFileName'] = readMeOutFilename
     
-    manifestOutPath = outDir/"manifest.ini"
-    with open(manifestOutPath, 'w') as f:
+    __writeManifestDictToFile(outDir/"manifest.ini", parser)
+
+def __readManifestDictFromFile(manifestPath):
+    parser = configparser.ConfigParser()
+    parser.optionxform = str #Override default of converting keys to lowercase (per https://stackoverflow.com/questions/19359556/configparser-reads-capital-keys-and-make-them-lower-case)
+    
+    #Workaround for manifest not having a section header (per https://stackoverflow.com/questions/2885190/using-configparser-to-read-a-file-without-section-name) 
+    with open(manifestPath) as stream:
+        parser.read_string("[DUMMY]\n" + stream.read())
+    manifestDict = parser['DUMMY']
+    
+    return manifestDict, parser
+
+def __writeManifestDictToFile(destPath, parser):
+    with open(destPath, 'w') as f:
         parser.write(f)
         
     #Getting rid of the dummy section header
-    with open(manifestOutPath, 'r') as f:
+    with open(destPath, 'r') as f:
         fileContents = f.readlines()
-    with open(manifestOutPath, 'w') as f:
+    with open(destPath, 'w') as f:
         f.writelines(fileContents[1:])
+
 
 
 
