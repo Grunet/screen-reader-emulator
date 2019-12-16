@@ -2,18 +2,18 @@ from pathlib import Path
 import json
 
 def getVersionNumber():
-    sharedConstPath = getSharedConstantsPath()
+    sharedConstPath = __getSharedConstantsPath()
     with open(sharedConstPath, 'r') as f:
         constantDict = json.load(f)
         return constantDict['version']
     
-def getSharedConstantsPath():
-    rootPkgDir = getRootPackagesDir()
-    sharedConstantsPath = findSharedConstantsJson(rootPkgDir)
+def __getSharedConstantsPath():
+    rootPkgDir = __getRootPackagesDir()
+    sharedConstantsPath = __findSharedConstantsJson(rootPkgDir)
     
     return sharedConstantsPath
     
-def findSharedConstantsJson(rootPkgDir):
+def __findSharedConstantsJson(rootPkgDir):
     matchesGenerator = rootPkgDir.glob('**/sharedConstants.json')
     matchesList = list(matchesGenerator)
     
@@ -24,14 +24,14 @@ def findSharedConstantsJson(rootPkgDir):
     else:
         return matchesList[0]
     
-def getRootPackagesDir():
-    pkgDirParts = __getPackageDirectory().parts
+def __getRootPackagesDir():
+    pkgDirParts = __getPackageDir().parts
     index = pkgDirParts.index("packages")
     rootPkgDir = Path(*pkgDirParts[:index+1])
     
     return rootPkgDir
 
-def __getPackageDirectory():
+def __getPackageDir():
     taskDir = Path(__file__).parent
     pkgDir = Path(*["packages" if part=="scripts" else part for part in taskDir.parts])
     return pkgDir
