@@ -4,12 +4,12 @@ const bump = require('gulp-bump');
 const path = require('path')
 const slash = require('slash');
 
-const versionExtractor = require('./versionExtractor.js');
+const { getVersionNumber } = require('./versionExtractor.js');
 
 async function defaultTask() {
     let sourceDir = __findSourceDirectory();
 
-    let versionNumber = await versionExtractor.getVersionNumber(sourceDir.abs);
+    let versionNumber = await getVersionNumber(sourceDir.abs);
 
     let extensionSourceDir = path.join(sourceDir.rel, "extension");
 
