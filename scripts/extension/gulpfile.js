@@ -1,6 +1,9 @@
 const { src, dest, series } = require('gulp');
+const mergeStream = require('merge-stream');
+const webpack = require('webpack-stream');
+const jeditor = require("gulp-json-editor");
+
 const del = require('del');
-const bump = require('gulp-bump');
 
 const path = require('path');
 const slash = require('slash');
@@ -17,8 +20,31 @@ async function build() {
 
     let versionNumber = await getVersionNumber();
 
-    return src(slash(extensionSourceDir + "/**/manifest.json"))
-        .pipe(bump({ version: versionNumber }))
+    return mergeStream(
+        src(slash(extensionSourceDir)) //this might not matter to the webpack call
+            .pipe(webpack({
+                entry: {
+                    'content.js': path.join(__dirname, '../../packages/extension/content/src/content.js'),
+                    'background.js': path.join(__dirname, '../../packages/extension/background/src/background.js')
+                },
+                output: {
+                    filename: '[name]',
+                }
+            })),
+        src(slash(extensionSourceDir + "/**/manifest.json"))
+            .pipe(jeditor({
+                'background': {
+                    'scripts': ['background.js']
+                },
+                'content_scripts': [
+                    {
+                        'js': ['content.js'],
+                        'matches': ['<all_urls>']
+                    }
+                ],
+                'version': versionNumber
+            }))
+    )
         .pipe(dest(slash(outDir)));
 }
 
