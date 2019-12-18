@@ -15,37 +15,40 @@ function clean() {
 }
 
 async function build() {
-    let extensionSourceDir = __findPkgDirectory().rel;
-    let outDir = __findOutDirectory().rel;
+    let extensionSourceDir = __findPkgDirectory();
 
     let versionNumber = await getVersionNumber();
 
+    const contentBundleFilename = 'content.js';
+    const backgroundBundleFilename = 'background.js';
+    let outDir = __findOutDirectory();
+
     return mergeStream(
-        src(slash(extensionSourceDir)) //this might not matter to the webpack call
+        src(slash(extensionSourceDir.rel)) //this might not matter to the webpack call
             .pipe(webpack({
                 entry: {
-                    'content.js': path.join(__dirname, '../../packages/extension/content/src/content.js'),
-                    'background.js': path.join(__dirname, '../../packages/extension/background/src/background.js')
+                    [contentBundleFilename]: path.join(extensionSourceDir.abs, 'content', 'src', 'content.js'),
+                    [backgroundBundleFilename]: path.join(extensionSourceDir.abs, 'background', 'src', 'background.js')
                 },
                 output: {
                     filename: '[name]',
                 }
             })),
-        src(slash(extensionSourceDir + "/**/manifest.json"))
+        src(slash(extensionSourceDir.rel + "/**/manifest.json"))
             .pipe(jeditor({
-                'background': {
-                    'scripts': ['background.js']
-                },
                 'content_scripts': [
                     {
-                        'js': ['content.js'],
+                        'js': [contentBundleFilename],
                         'matches': ['<all_urls>']
                     }
                 ],
+                'background': {
+                    'scripts': [backgroundBundleFilename]
+                },
                 'version': versionNumber
             }))
     )
-        .pipe(dest(slash(outDir)));
+        .pipe(dest(slash(outDir.rel)));
 }
 
 function __findOutDirectory() {
