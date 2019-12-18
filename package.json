@@ -1,0 +1,18 @@
+{
+  "name": "screen-reader-emulator",
+  "version": "0.0.0",
+  "description": "A browser extension to operate screen readers with your mouse instead of hotkeys ",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Grunet/screen-reader-emulator.git"
+  },
+  "author": "Sadik Shahidain",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Grunet/screen-reader-emulator/issues"
+  },
+  "homepage": "https://github.com/Grunet/screen-reader-emulator#readme",
+  "devDependencies": {
+    "eslint": "^6.7.2"
+  }
+}
