@@ -6,7 +6,7 @@ import markdown
 import configparser
 
 import versionIdentifier
-from dirFinder import findMatchingOutDir
+from dirFinder import findMatchingOutDir, findMatchingPkgDir
 
 
 @task
@@ -21,7 +21,7 @@ def build(c):
     outDir = findMatchingOutDir(__file__)
     outDir.mkdir(parents=True)
 
-    pkgDir = __getPackageDir()
+    pkgDir = findMatchingPkgDir(__file__)
 
     __copySourceFiles(outDir, pkgDir / "src")
 
@@ -62,14 +62,6 @@ def copy(c, nvdaConfigPath):
         shutil.rmtree(thisPluginsDir)
 
     shutil.copytree(outDir, thisPluginsDir)
-
-
-def __getPackageDir():
-    taskDir = Path(__file__).parent
-    pkgDir = Path(
-        *["packages" if part == "scripts" else part for part in taskDir.parts]
-    )
-    return pkgDir
 
 
 def __copySourceFiles(outDir, srcDir):
