@@ -5,7 +5,7 @@ import shutil
 import markdown
 import configparser
 
-import versionIdentifier
+import constantsExtractor
 from dirFinder import findMatchingOutDir, findMatchingPkgDir
 
 
@@ -31,7 +31,7 @@ def build(c):
         outDir,
         pkgDir / "manifest.ini",
         readMeOutFilename,
-        versionIdentifier.getVersionNumber(),
+        constantsExtractor.getVersionNumber(),
     )
 
 
