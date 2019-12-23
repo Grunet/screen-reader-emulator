@@ -6,18 +6,19 @@ import markdown
 import configparser
 
 import versionIdentifier
+from dirFinder import findMatchingOutDir
 
 
 @task
 def clean(c):
-    outDir = __getOutDir()
+    outDir = findMatchingOutDir(__file__)
     if outDir.is_dir():
         shutil.rmtree(outDir)
 
 
 @task(pre=[clean])
 def build(c):
-    outDir = __getOutDir()
+    outDir = findMatchingOutDir(__file__)
     outDir.mkdir(parents=True)
 
     pkgDir = __getPackageDir()
@@ -51,7 +52,7 @@ def copy(c, nvdaConfigPath):
     if not addOnsDir.is_dir():
         return
 
-    outDir = __getOutDir()
+    outDir = findMatchingOutDir(__file__)
 
     manifestDict, _ = __readManifestDictFromFile(outDir / "manifest.ini")
     pluginName = manifestDict["name"]
@@ -61,12 +62,6 @@ def copy(c, nvdaConfigPath):
         shutil.rmtree(thisPluginsDir)
 
     shutil.copytree(outDir, thisPluginsDir)
-
-
-def __getOutDir():
-    taskDir = Path(__file__).parent
-    outDir = Path(*["out" if part == "scripts" else part for part in taskDir.parts])
-    return outDir
 
 
 def __getPackageDir():
