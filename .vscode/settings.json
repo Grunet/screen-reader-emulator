@@ -1,7 +1,9 @@
 {
   "editor.formatOnSave": true,
+  "editor.formatOnSaveTimeout": 1500,
   "python.linting.pylintEnabled": false,
   "python.linting.flake8Enabled": true,
+  "python.linting.flake8Args": ["--max-line-length=88"],
   "python.linting.enabled": true,
   "python.formatting.provider": "black",
   "javascript.format.enable": true,
