@@ -1,0 +1,7 @@
+{
+  "name": "",
+  "description": "Native messaging host for the screen reader emulator extension",
+  "path": "",
+  "type": "stdio",
+  "allowed_extensions": []
+}

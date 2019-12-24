@@ -1,8 +1,12 @@
 {
-    "supportedScreenReaders": {
-        "NVDA": {
-            "supportedPlatforms": ["Windows"]
-        }
-    },
-    "version": "0.0.1"
+  "supportedScreenReaders": {
+    "NVDA": {
+      "supportedPlatforms": ["Windows"]
+    }
+  },
+  "ids": {
+    "extension": "screen-reader-emulator",
+    "nativeApp": "screen-reader-emulator-native-app"
+  },
+  "version": "0.0.1"
 }

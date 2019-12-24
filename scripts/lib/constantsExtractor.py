@@ -3,10 +3,25 @@ import json
 
 
 def getVersionNumber():
+    constantDict = __getSharedConstantsData()
+    return constantDict["version"]
+
+
+def getExtensionId():
+    constantDict = __getSharedConstantsData()
+    return constantDict["ids"]["extension"]
+
+
+def getNativeAppId():
+    constantDict = __getSharedConstantsData()
+    return constantDict["ids"]["nativeApp"]
+
+
+def __getSharedConstantsData():
     sharedConstPath = __getSharedConstantsPath()
     with open(sharedConstPath, "r") as f:
         constantDict = json.load(f)
-        return constantDict["version"]
+        return constantDict
 
 
 def __getSharedConstantsPath():
