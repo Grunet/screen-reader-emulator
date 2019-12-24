@@ -20,9 +20,24 @@ def build(c):
     outDir = findMatchingOutDir(__file__)
     pkgDir = findMatchingPkgDir(__file__)
 
-    shutil.copytree(pkgDir / "src", outDir)
+    entryPoint = __copySrcToOut(outDir, pkgDir)
+    pathToExe = __createExeFromCopiedSrc(outDir, entryPoint)
+
+    nameForManifest, pathToHydratedManifest = __hydrateManifest(
+        outDir, pkgDir, pathToExe
+    )
+
+    __createRefToManifest(nameForManifest, pathToHydratedManifest)
+
+
+def __copySrcToOut(outDir, nativeAppPkgDir):
+    shutil.copytree(nativeAppPkgDir / "src", outDir)
     entryPoint = "app.py"
 
+    return entryPoint
+
+
+def __createExeFromCopiedSrc(outDir, entryPoint):
     import subprocess
 
     subprocess.call(["pyinstaller", entryPoint], cwd=outDir)
@@ -31,9 +46,13 @@ def build(c):
         ".exe"
     )
 
+    return pathToExe
+
+
+def __hydrateManifest(outDir, nativeAppPkgDir, pathToExe):
     nameForManifest = constantsExtractor.getNativeAppId()
 
-    manifestSrc = pkgDir / "manifest.json"
+    manifestSrc = nativeAppPkgDir / "manifest.json"
 
     with open(manifestSrc, "r") as f:
         manifestDict = json.load(f)
@@ -47,7 +66,7 @@ def build(c):
     with open(manifestOut, "w") as f:
         json.dump(manifestDict, f, sort_keys=True, indent=4)
 
-    __createRefToManifest(nameForManifest, manifestOut)
+    return nameForManifest, manifestOut
 
 
 def __createRefToManifest(manifestName, pathToManifest):
