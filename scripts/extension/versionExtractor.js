@@ -3,14 +3,14 @@ const glob = require("glob");
 const jsonfile = require("jsonfile");
 
 async function getVersionNumber() {
-  let sourceDir = __findSourceDirectory().abs;
+  let sourceDir = __findRootPackageDirectory().abs;
   let constantsFilePath = await __findSharedConstantsJson(sourceDir);
   let versionNumber = await __getVersionFromFile(constantsFilePath);
 
   return versionNumber;
 }
 
-function __findSourceDirectory() {
+function __findRootPackageDirectory() {
   let scriptsDirParts = __dirname.split(path.sep);
   let index = scriptsDirParts.indexOf("scripts");
   if (index < 0) {

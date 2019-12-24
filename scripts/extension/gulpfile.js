@@ -9,19 +9,20 @@ const path = require("path");
 const slash = require("slash");
 
 const { getVersionNumber } = require("./versionExtractor.js");
+const { findMatchingOutDir, findMatchingPkgDir } = require("./dirFinder.js");
 
 function clean() {
-  return del(slash(__findOutDirectory().rel) + "/**", { force: true });
+  return del(slash(findMatchingOutDir(__dirname).rel) + "/**", { force: true });
 }
 
 async function build() {
-  let extensionSourceDir = __findPkgDirectory();
+  let extensionSourceDir = findMatchingPkgDir(__dirname);
 
   let versionNumber = await getVersionNumber();
 
   const contentBundleFilename = "content.js";
   const backgroundBundleFilename = "background.js";
-  let outDir = __findOutDirectory();
+  let outDir = findMatchingOutDir(__dirname);
 
   return mergeStream(
     src(slash(extensionSourceDir.rel)) //this might not matter to the webpack call
@@ -61,44 +62,6 @@ async function build() {
       })
     )
   ).pipe(dest(slash(outDir.rel)));
-}
-
-function __findOutDirectory() {
-  let scriptsDirParts = __dirname.split(path.sep);
-  let index = scriptsDirParts.indexOf("scripts");
-  if (index < 0) {
-    throw new Error("Unable to find source directory from scripts directory");
-  }
-
-  let outDirParts = scriptsDirParts.slice();
-  outDirParts[index] = "out";
-
-  let outDirAbsPath = path.join(...outDirParts);
-  let outDirRelPath = path.relative(__dirname, outDirAbsPath);
-
-  return {
-    abs: outDirAbsPath,
-    rel: outDirRelPath
-  };
-}
-
-function __findPkgDirectory() {
-  let scriptsDirParts = __dirname.split(path.sep);
-  let index = scriptsDirParts.indexOf("scripts");
-  if (index < 0) {
-    throw new Error("Unable to find source directory from scripts directory");
-  }
-
-  let pkgDirParts = scriptsDirParts.slice();
-  pkgDirParts[index] = "packages";
-
-  let pkgDirAbsPath = path.join(...pkgDirParts);
-  let pkgDirRelPath = path.relative(__dirname, pkgDirAbsPath);
-
-  return {
-    abs: pkgDirAbsPath,
-    rel: pkgDirRelPath
-  };
 }
 
 exports.clean = clean;
