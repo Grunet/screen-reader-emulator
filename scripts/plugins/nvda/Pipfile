@@ -7,6 +7,7 @@ verify_ssl = true
 clean = "invoke clean"
 build = "invoke build"
 copy = "invoke copy"
+all = "invoke clean build copy"
 
 [dev-packages]
 invoke = "*"

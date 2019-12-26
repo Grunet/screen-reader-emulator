@@ -1,5 +1,6 @@
 from invoke import task
 
+import os
 from pathlib import Path
 import shutil
 import markdown
@@ -35,16 +36,9 @@ def build(c):
     )
 
 
-@task(
-    help={
-        "nvdaConfigPath": (
-            "Absolute path to NVDA's configuration directory."
-            "Probably under AppData/Roaming"
-        )
-    },
-)
-def copy(c, nvdaConfigPath):
-    nvdaConfigPathAsStr = nvdaConfigPath
+@task
+def copy(c):
+    nvdaConfigPathAsStr = os.environ["NVDA_CONFIG_PATH"]
     nvdaConfigPath = Path(nvdaConfigPathAsStr)
 
     addOnsDir = nvdaConfigPath / "addons"
