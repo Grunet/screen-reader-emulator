@@ -18,7 +18,7 @@ def clean(c):
         shutil.rmtree(outDir)
 
 
-@task(pre=[clean])
+@task
 def build(c):
     outDir = findMatchingOutDir(__file__)
     pkgDir = findMatchingPkgDir(__file__)

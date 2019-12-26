@@ -16,7 +16,7 @@ def clean(c):
         shutil.rmtree(outDir)
 
 
-@task(pre=[clean])
+@task
 def build(c):
     outDir = findMatchingOutDir(__file__)
     outDir.mkdir(parents=True)
@@ -36,7 +36,6 @@ def build(c):
 
 
 @task(
-    pre=[build],
     help={
         "nvdaConfigPath": (
             "Absolute path to NVDA's configuration directory."
