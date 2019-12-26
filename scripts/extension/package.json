@@ -5,7 +5,8 @@
   "scripts": {
     "clean": "node_modules/.bin/gulp clean",
     "build": "node_modules/.bin/gulp build",
-    "start": "node launch-browser"
+    "start": "node launch-browser",
+    "all": "npm run clean && npm run build && npm run start"
   },
   "author": "Sadik Shahidain",
   "license": "MIT",
