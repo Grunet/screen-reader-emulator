@@ -6,6 +6,8 @@ verify_ssl = true
 [scripts]
 clean = "invoke clean"
 build = "invoke build"
+start = "invoke start"
+all = "invoke clean build start"
 
 [dev-packages]
 invoke = "*"

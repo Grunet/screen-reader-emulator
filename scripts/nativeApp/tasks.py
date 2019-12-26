@@ -6,6 +6,9 @@ from dirFinder import findMatchingOutDir, findMatchingPkgDir
 from pathlib import Path
 import json
 import shutil
+import subprocess
+
+ENTRY_POINT = "app.py"
 
 
 @task
@@ -20,8 +23,8 @@ def build(c):
     outDir = findMatchingOutDir(__file__)
     pkgDir = findMatchingPkgDir(__file__)
 
-    entryPoint = __copySrcToOut(outDir, pkgDir)
-    pathToExe = __createExeFromCopiedSrc(outDir, entryPoint)
+    __copySrcToOut(outDir, pkgDir)
+    pathToExe = __createExeFromCopiedSrc(outDir, ENTRY_POINT)
 
     nameForManifest, pathToHydratedManifest = __hydrateManifest(
         outDir, pkgDir, pathToExe
@@ -30,17 +33,26 @@ def build(c):
     __createRefToManifest(nameForManifest, pathToHydratedManifest)
 
 
+@task
+def start(c):
+    outDir = findMatchingOutDir(__file__)
+
+    pathToExe = __getPathToExe(outDir, ENTRY_POINT)
+
+    subprocess.call(str(pathToExe.resolve()))
+
+
 def __copySrcToOut(outDir, nativeAppPkgDir):
     shutil.copytree(nativeAppPkgDir / "src", outDir)
-    entryPoint = "app.py"
-
-    return entryPoint
 
 
 def __createExeFromCopiedSrc(outDir, entryPoint):
-    import subprocess
-
     subprocess.call(["pyinstaller", entryPoint], cwd=outDir)
+
+    return __getPathToExe(outDir, entryPoint)
+
+
+def __getPathToExe(outDir, entryPoint):
     entryPointFilename = Path(entryPoint).stem  # Removes the ".py" extension
     pathToExe = (outDir / "dist" / entryPointFilename / entryPointFilename).with_suffix(
         ".exe"
