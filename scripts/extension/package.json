@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "description": "Contains tools use to package/build the screen-reader-emulator's browser extension functionality",
   "scripts": {
-    "clean": "node_modules/.bin/gulp clean",
-    "build": "node_modules/.bin/gulp build",
+    "clean": "gulp clean",
+    "build": "gulp build",
     "start": "node launch-browser",
     "all": "npm run clean && npm run build && npm run start"
   },
