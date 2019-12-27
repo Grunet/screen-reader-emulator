@@ -66,7 +66,7 @@ def start(c):
     # Making sure it's running something with at least the right name
     # See the warning from https://docs.python.org/2/library/subprocess.html#frequently-used-arguments # noqa
     if nvdaExePath.name != "nvda.exe":
-        return
+        raise Exception("The path to NVDA should end with the exe's filename")
 
     subprocess.run(
         [nvdaExePathAsStr],
