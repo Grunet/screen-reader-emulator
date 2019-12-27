@@ -5,6 +5,7 @@ from pathlib import Path
 import shutil
 import markdown
 import configparser
+import subprocess
 
 import constantsExtractor
 from dirFinder import findMatchingOutDir, findMatchingPkgDir
@@ -55,6 +56,22 @@ def copy(c):
         shutil.rmtree(thisPluginsDir)
 
     shutil.copytree(outDir, thisPluginsDir)
+
+
+@task
+def start(c):
+    nvdaExePathAsStr = os.environ["NVDA_EXE_PATH"]
+    nvdaExePath = Path(nvdaExePathAsStr)
+
+    # Making sure it's running something with at least the right name
+    # See the warning from https://docs.python.org/2/library/subprocess.html#frequently-used-arguments # noqa
+    if nvdaExePath.name != "nvda.exe":
+        return
+
+    subprocess.run(
+        [nvdaExePathAsStr],
+        shell=True,  # Bypasses the "requested operation requires elevation" error
+    )
 
 
 def __copySourceFiles(outDir, srcDir):
