@@ -68,7 +68,7 @@ def start(c):
     if nvdaExePath.name != "nvda.exe":
         raise Exception("The path to NVDA should end with the exe's filename")
 
-    subprocess.run(
+    subprocess.Popen(
         [nvdaExePathAsStr],
         shell=True,  # Bypasses the "requested operation requires elevation" error
     )
