@@ -69,7 +69,7 @@ def start(c):
         raise Exception("The path to NVDA should end with the exe's filename")
 
     subprocess.Popen(
-        [nvdaExePathAsStr],
+        [nvdaExePathAsStr, "--replace"],
         shell=True,  # Bypasses the "requested operation requires elevation" error
     )
 
