@@ -1,7 +1,10 @@
 const { src, dest, series } = require("gulp");
 const mergeStream = require("merge-stream");
-const webpack = require("webpack-stream");
+const webpack = require("webpack");
+const webpackStream = require("webpack-stream");
 const jeditor = require("gulp-json-editor");
+const template = require("gulp-template");
+const rename = require("gulp-rename");
 
 const del = require("del");
 
@@ -20,20 +23,39 @@ async function build() {
 
   let versionNumber = await getVersionNumber();
 
-  const contentBundleFilename = "content.js";
+  const devtoolsBundleFilename = "devtools.js";
+  const panelBundleFilename = "devtools-panel.js";
   const backgroundBundleFilename = "background.js";
+
+  const devtoolsHtmlFilename = "devtools-page.html";
+  const panelHtmlFilename = "panel.html";
+
+  const iconFilename = "NotImplementedYet.png"; // TODO - The icon hasn't been decided on yet, so stubbing it for now
+
   let outDir = findMatchingOutDir(__dirname);
 
   return mergeStream(
     src(slash(extensionSourceDir.rel)) //this might not matter to the webpack call
       .pipe(
-        webpack({
+        webpackStream({
+          plugins: [
+            new webpack.DefinePlugin({
+              ASSETS_PATH_TO_ICON: JSON.stringify(iconFilename),
+              DEVTOOLS_PATH_TO_PANEL_HTML: JSON.stringify(panelHtmlFilename)
+            })
+          ],
           entry: {
-            [contentBundleFilename]: path.join(
+            [devtoolsBundleFilename]: path.join(
               extensionSourceDir.abs,
-              "content",
+              "devtools",
               "src",
-              "content.js"
+              "index.js"
+            ),
+            [panelBundleFilename]: path.join(
+              extensionSourceDir.abs,
+              "devtools",
+              "src",
+              "panel.js"
             ),
             [backgroundBundleFilename]: path.join(
               extensionSourceDir.abs,
@@ -47,14 +69,15 @@ async function build() {
           }
         })
       ),
+    src(slash(__dirname + "/jsShell.html"))
+      .pipe(template({ pathToJsFromManifest: devtoolsBundleFilename }))
+      .pipe(rename(devtoolsHtmlFilename)),
+    src(slash(__dirname + "/jsShell.html"))
+      .pipe(template({ pathToJsFromManifest: panelBundleFilename }))
+      .pipe(rename(panelHtmlFilename)),
     src(slash(extensionSourceDir.rel + "/**/manifest.json")).pipe(
       jeditor({
-        content_scripts: [
-          {
-            js: [contentBundleFilename],
-            matches: ["<all_urls>"]
-          }
-        ],
+        devtools_page: devtoolsHtmlFilename,
         background: {
           scripts: [backgroundBundleFilename]
         },
