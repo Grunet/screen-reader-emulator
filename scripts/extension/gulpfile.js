@@ -20,6 +20,7 @@ function clean() {
 
 async function build() {
   let extensionSourceDir = findMatchingPkgDir(__dirname);
+  let outDir = findMatchingOutDir(__dirname);
 
   let versionNumber = await getVersionNumber();
 
@@ -32,59 +33,103 @@ async function build() {
 
   const iconFilename = "NotImplementedYet.png"; // TODO - The icon hasn't been decided on yet, so stubbing it for now
 
-  let outDir = findMatchingOutDir(__dirname);
-
   return mergeStream(
-    src(slash(extensionSourceDir.rel)) //this might not matter to the webpack call
-      .pipe(
-        webpackStream({
-          plugins: [
-            new webpack.DefinePlugin({
-              ASSETS_PATH_TO_ICON: JSON.stringify(iconFilename),
-              DEVTOOLS_PATH_TO_PANEL_HTML: JSON.stringify(panelHtmlFilename)
-            })
-          ],
-          entry: {
-            [devtoolsBundleFilename]: path.join(
-              extensionSourceDir.abs,
-              "devtools",
-              "src",
-              "index.js"
-            ),
-            [panelBundleFilename]: path.join(
-              extensionSourceDir.abs,
-              "devtools",
-              "src",
-              "panel.js"
-            ),
-            [backgroundBundleFilename]: path.join(
-              extensionSourceDir.abs,
-              "background",
-              "src",
-              "background.js"
-            )
-          },
-          output: {
-            filename: "[name]"
-          }
-        })
-      ),
-    src(slash(__dirname + "/jsShell.html"))
-      .pipe(template({ pathToJsFromManifest: devtoolsBundleFilename }))
-      .pipe(rename(devtoolsHtmlFilename)),
-    src(slash(__dirname + "/jsShell.html"))
-      .pipe(template({ pathToJsFromManifest: panelBundleFilename }))
-      .pipe(rename(panelHtmlFilename)),
-    src(slash(extensionSourceDir.rel + "/**/manifest.json")).pipe(
-      jeditor({
-        devtools_page: devtoolsHtmlFilename,
-        background: {
-          scripts: [backgroundBundleFilename]
-        },
-        version: versionNumber
-      })
-    )
+    __getJsBundlingStream(
+      extensionSourceDir,
+      {
+        devtools: devtoolsBundleFilename,
+        panel: panelBundleFilename,
+        background: backgroundBundleFilename
+      },
+      {
+        ASSETS_PATH_TO_ICON: iconFilename,
+        DEVTOOLS_PATH_TO_PANEL_HTML: panelHtmlFilename
+      }
+    ),
+    __getHtmlCreationStream(
+      __dirname + "/jsShell.html",
+      devtoolsHtmlFilename,
+      devtoolsBundleFilename
+    ),
+    __getHtmlCreationStream(
+      __dirname + "/jsShell.html",
+      panelHtmlFilename,
+      panelBundleFilename
+    ),
+    __getManifestHydrationStream(extensionSourceDir.rel + "/**/manifest.json", {
+      devtoolsHtmlFilename: devtoolsHtmlFilename,
+      backgroundBundleFilename: backgroundBundleFilename,
+      versionNumber: versionNumber
+    })
   ).pipe(dest(slash(outDir.rel)));
+}
+
+function __getJsBundlingStream(
+  extensionSourceDir,
+  bundleFilenames,
+  globalConstants
+) {
+  let globalConstantsAsJSON = Object.fromEntries(
+    Object.entries(globalConstants).map(([k, v]) => [k, JSON.stringify(v)])
+  );
+
+  return src(slash(extensionSourceDir.rel)) //this might not matter to the webpack call
+    .pipe(
+      webpackStream({
+        plugins: [new webpack.DefinePlugin(globalConstantsAsJSON)],
+        entry: {
+          [bundleFilenames.devtools]: path.join(
+            extensionSourceDir.abs,
+            "devtools",
+            "src",
+            "index.js"
+          ),
+          [bundleFilenames.panel]: path.join(
+            extensionSourceDir.abs,
+            "devtools",
+            "src",
+            "panel.js"
+          ),
+          [bundleFilenames.background]: path.join(
+            extensionSourceDir.abs,
+            "background",
+            "src",
+            "background.js"
+          )
+        },
+        output: {
+          filename: "[name]"
+        }
+      })
+    );
+}
+
+function __getHtmlCreationStream(
+  pathToHtmlTemplate,
+  filenameForNewHtml,
+  pathToJsFromManifest
+) {
+  return src(slash(pathToHtmlTemplate))
+    .pipe(template({ pathToJsFromManifest: pathToJsFromManifest }))
+    .pipe(rename(filenameForNewHtml));
+}
+
+function __getManifestHydrationStream(globForManifest, inputs) {
+  let {
+    devtoolsHtmlFilename,
+    backgroundBundleFilename,
+    versionNumber
+  } = inputs;
+
+  return src(slash(globForManifest)).pipe(
+    jeditor({
+      devtools_page: devtoolsHtmlFilename,
+      background: {
+        scripts: [backgroundBundleFilename]
+      },
+      version: versionNumber
+    })
+  );
 }
 
 exports.clean = clean;
