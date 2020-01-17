@@ -11,7 +11,7 @@ all = "invoke clean build start"
 
 [dev-packages]
 invoke = "*"
-pyinstaller = "*"
+pyinstaller = ">=3.6"
 
 [packages]
 
