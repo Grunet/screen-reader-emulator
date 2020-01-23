@@ -1,0 +1,17 @@
+{
+  "name": "screen-reader-emulator-extension",
+  "description": "The browser extension portion of the screen reader emulator",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sadik Shahidain",
+  "license": "MIT",
+  "dependencies": {
+    "rxjs": "^6.5.4"
+  },
+  "devDependencies": {
+    "express": "^4.17.1",
+    "lodash.trimend": "^4.5.1",
+    "slash": "^3.0.0"
+  }
+}
