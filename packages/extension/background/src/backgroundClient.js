@@ -22,4 +22,8 @@ class BackgroundClient {
   }
 }
 
-export { BackgroundClient };
+function connectToBackgroundScripts() {
+  return new BackgroundClient();
+}
+
+export { connectToBackgroundScripts };

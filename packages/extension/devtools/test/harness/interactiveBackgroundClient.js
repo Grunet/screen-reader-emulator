@@ -1,3 +1,7 @@
 import { InteractiveFake } from "../mocks/backgroundClientFakes.js";
 
-export { InteractiveFake as BackgroundClient };
+function connectToBackgroundScripts() {
+  return new InteractiveFake();
+}
+
+export { connectToBackgroundScripts };
