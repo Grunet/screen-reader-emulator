@@ -1,9 +1,8 @@
-import { connectToBackgroundScripts } from "../../background/src/backgroundClient.js";
+import { createConnectionToBackgroundScripts } from "./backgroundClientAdapter.js";
 
 console.log("This is from the panel's javascript");
 
-const backgroundClient = connectToBackgroundScripts();
-
-backgroundClient.__inputs$.next(
-  "This is from the panel's javascript - through the RxJS Subject"
+const backgroundConnection = createConnectionToBackgroundScripts();
+backgroundConnection.outputs$.next(
+  "This is from the panel's javascript - through the background connection"
 );
