@@ -1,24 +1,17 @@
-import { Observable, Subject } from "../../node_modules/rxjs/_esm2015/index.js"; //Workaround for https://github.com/ReactiveX/rxjs/issues/4416
+import { createStreamsFromPort } from "../../lib/src/portToStreams.js";
 
 class BackgroundClient {
   constructor() {
     let port = browser.runtime.connect();
 
-    this.__inputs$ = new Subject();
-    this.__inputs$.subscribe({
-      next: msg => port.postMessage(msg)
-    });
-
-    this.__outputs$ = new Observable(subscriber => {
-      port.onMessage.addListener(msg => subscriber.next(msg));
-    });
+    this.__streams = createStreamsFromPort(port);
   }
 
   get inputs$() {
-    return this.__inputs$;
+    return this.__streams.inputs$;
   }
   get outputs$() {
-    return this.__outputs$;
+    return this.__streams.outputs$;
   }
 }
 
