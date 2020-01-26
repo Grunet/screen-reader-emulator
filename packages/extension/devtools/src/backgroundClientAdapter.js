@@ -6,11 +6,11 @@ class BackgroundClientAdapter {
   }
 
   get inputs$() {
-    return this.__backgroundClient.outputs$;
+    return this.__backgroundClient.inputs$;
   }
 
   get outputs$() {
-    return this.__backgroundClient.inputs$;
+    return this.__backgroundClient.outputs$;
   }
 }
 
