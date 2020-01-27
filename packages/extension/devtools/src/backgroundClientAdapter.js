@@ -15,7 +15,7 @@ class BackgroundClientAdapter {
 }
 
 function createConnectionToBackgroundScripts() {
-  let backgroundClient = connectToBackgroundScripts();
+  const backgroundClient = connectToBackgroundScripts();
 
   return new BackgroundClientAdapter(backgroundClient);
 }
