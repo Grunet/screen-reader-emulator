@@ -1,8 +1,8 @@
 import { connectToBackgroundScripts } from "../../background/src/backgroundClient.js";
 
 class BackgroundClientAdapter {
-  constructor() {
-    this.__backgroundClient = connectToBackgroundScripts();
+  constructor(backgroundClient) {
+    this.__backgroundClient = backgroundClient;
   }
 
   get inputs$() {
@@ -15,7 +15,9 @@ class BackgroundClientAdapter {
 }
 
 function createConnectionToBackgroundScripts() {
-  return new BackgroundClientAdapter();
+  let backgroundClient = connectToBackgroundScripts();
+
+  return new BackgroundClientAdapter(backgroundClient);
 }
 
 export { createConnectionToBackgroundScripts };
