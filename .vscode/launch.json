@@ -11,6 +11,18 @@
         "uriFormat": "http://localhost:%s",
         "action": "openExternally"
       }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Background test harness",
+      "program": "${workspaceFolder}/packages/extension/background/test/harness/testWebServer.js",
+
+      "serverReadyAction": {
+        "pattern": "listening on port ([0-9]+)",
+        "uriFormat": "http://localhost:%s",
+        "action": "openExternally"
+      }
     }
   ]
 }
