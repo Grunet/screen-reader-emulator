@@ -1,12 +1,10 @@
-import { Subject } from "../../../node_modules/rxjs/_esm2015/index.js"; //Workaround for https://github.com/ReactiveX/rxjs/issues/4416
+import { Subject } from "../../../../node_modules/rxjs/_esm2015/index.js"; //Workaround for https://github.com/ReactiveX/rxjs/issues/4416
 
 class InteractiveFake {
   constructor() {
-    //Removed the connect() call to the background script
-
     this.__inputs$ = new Subject();
     this.__inputs$.subscribe({
-      next: msg => console.dir(msg) //Logging to the console instead of posting to the background script
+      next: msg => console.dir(msg) //Logging to the console instead of posting to the devtools script
     });
 
     this.__outputs$ = new Subject(); //Switched to a Subject to allow for manual updates to the stream
@@ -15,9 +13,9 @@ class InteractiveFake {
 
   __getRefOnGlobalFakes() {
     globalThis.Fakes = globalThis.Fakes || {};
-    globalThis.Fakes.BackgroundClient = {};
+    globalThis.Fakes.DevtoolsClient = {};
 
-    return globalThis.Fakes.BackgroundClient;
+    return globalThis.Fakes.DevtoolsClient;
   }
 
   get inputs$() {
@@ -28,4 +26,10 @@ class InteractiveFake {
   }
 }
 
-export { InteractiveFake };
+async function connectToInteractiveFake() {
+  return new Promise(resolve => {
+    resolve(new InteractiveFake());
+  });
+}
+
+export { connectToInteractiveFake };
