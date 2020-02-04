@@ -1,4 +1,4 @@
-import { createFakeStreams } from "../../../../lib/test/mocks/src/portToStreamsFakes.js";
+import { createFakeStreams } from "../../../../../lib/test/mocks/src/portToStreamsFakes.js";
 
 async function connectToInteractiveFake() {
   return new Promise(resolve => {

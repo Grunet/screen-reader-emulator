@@ -1,4 +1,4 @@
-import { createStreamsFromPort } from "../../extension/lib/src/portToStreams.js";
+import { createStreamsFromPort } from "../../lib/src/portToStreams.js";
 
 function connectToNativeApp() {
   let port = browser.runtime.connectNative(

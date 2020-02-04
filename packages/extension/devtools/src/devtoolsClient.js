@@ -1,4 +1,4 @@
-import { createStreamsFromPort } from "../../lib/src/portToStreams.js";
+import { createStreamsFromPort } from "../../../lib/src/portToStreams.js";
 
 async function connectToDevtoolsScripts() {
   return new Promise(resolve => {

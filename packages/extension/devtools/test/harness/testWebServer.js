@@ -6,14 +6,14 @@ const trimEnd = require("lodash.trimEnd");
 const app = express();
 const port = 8000;
 
-const staticAssetsRootDir = path.resolve(path.join(__dirname, "../../../"));
+const staticAssetsRootDir = path.resolve(path.join(__dirname, "../../../../"));
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "panelTester.html"));
 });
 
 //Switching in test doubles
-app.get("/background/src/backgroundClient.js", (req, res) => {
+app.get("/extension/background/src/backgroundClient.js", (req, res) => {
   const relPathToFake = path.relative(
     staticAssetsRootDir,
     path.join(__dirname, "interactiveBackgroundClient.js")
