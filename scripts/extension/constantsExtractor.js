@@ -3,8 +3,7 @@ const glob = require("glob");
 const jsonfile = require("jsonfile");
 
 async function getVersionNumber() {
-  let sourceDir = __findRootPackageDirectory().abs;
-  let constantsFilePath = await __findSharedConstantsJson(sourceDir);
+  let constantsFilePath = await __findPathToConstantsFile();
 
   let versionNumber = await __getVersionFromFile(constantsFilePath);
 
@@ -12,12 +11,17 @@ async function getVersionNumber() {
 }
 
 async function getNativeAppId() {
-  let sourceDir = __findRootPackageDirectory().abs;
-  let constantsFilePath = await __findSharedConstantsJson(sourceDir);
+  let constantsFilePath = await __findPathToConstantsFile();
 
   let nativeAppId = await __getNativeAppIdFromFile(constantsFilePath);
 
   return nativeAppId;
+}
+
+async function __findPathToConstantsFile() {
+  let sourceDir = __findRootPackageDirectory().abs;
+
+  return __findSharedConstantsJson(sourceDir);
 }
 
 function __findRootPackageDirectory() {
@@ -66,15 +70,19 @@ async function __findSharedConstantsJson(sourceDir) {
 }
 
 async function __getVersionFromFile(filepath) {
-  let constantsDict = await jsonfile.readFile(filepath);
+  let constantsDict = await __getConstantsDict(filepath);
 
   return constantsDict["version"];
 }
 
 async function __getNativeAppIdFromFile(filepath) {
-  let constantsDict = await jsonfile.readFile(filepath);
+  let constantsDict = await __getConstantsDict(filepath);
 
   return constantsDict["ids"]["nativeApp"];
+}
+
+async function __getConstantsDict(filepath) {
+  return jsonfile.readFile(filepath);
 }
 
 module.exports.getVersionNumber = getVersionNumber;
