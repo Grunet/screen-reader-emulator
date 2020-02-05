@@ -5,9 +5,19 @@ const jsonfile = require("jsonfile");
 async function getVersionNumber() {
   let sourceDir = __findRootPackageDirectory().abs;
   let constantsFilePath = await __findSharedConstantsJson(sourceDir);
+
   let versionNumber = await __getVersionFromFile(constantsFilePath);
 
   return versionNumber;
+}
+
+async function getNativeAppId() {
+  let sourceDir = __findRootPackageDirectory().abs;
+  let constantsFilePath = await __findSharedConstantsJson(sourceDir);
+
+  let nativeAppId = await __getNativeAppIdFromFile(constantsFilePath);
+
+  return nativeAppId;
 }
 
 function __findRootPackageDirectory() {
@@ -61,4 +71,11 @@ async function __getVersionFromFile(filepath) {
   return constantsDict["version"];
 }
 
+async function __getNativeAppIdFromFile(filepath) {
+  let constantsDict = await jsonfile.readFile(filepath);
+
+  return constantsDict["ids"]["nativeApp"];
+}
+
 module.exports.getVersionNumber = getVersionNumber;
+module.exports.getNativeAppId = getNativeAppId;

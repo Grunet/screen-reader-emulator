@@ -11,7 +11,7 @@ const del = require("del");
 const path = require("path");
 const slash = require("slash");
 
-const { getVersionNumber } = require("./versionExtractor.js");
+const { getVersionNumber, getNativeAppId } = require("./constantsExtractor.js");
 const { findMatchingOutDir, findMatchingPkgDir } = require("./dirFinder.js");
 
 function clean() {
@@ -23,6 +23,7 @@ async function build() {
   let outDir = findMatchingOutDir(__dirname);
 
   let versionNumber = await getVersionNumber();
+  let nativeAppId = await getNativeAppId();
 
   const devtoolsBundleFilename = "devtools.js";
   const panelBundleFilename = "devtools-panel.js";
@@ -42,6 +43,7 @@ async function build() {
         background: backgroundBundleFilename
       },
       {
+        NATIVE_APP_ID: nativeAppId,
         ASSETS_PATH_TO_ICON: iconFilename,
         DEVTOOLS_PATH_TO_PANEL_HTML: panelHtmlFilename
       }
