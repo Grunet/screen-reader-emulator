@@ -24,6 +24,17 @@ app.get("/extension/devtools/src/devtoolsClient.js", (req, res) => {
   res.redirect(urlRelativeToRoot);
 });
 
+app.get("/nativeApp/src/nativeAppClient.js", (req, res) => {
+  const relPathToFake = path.relative(
+    staticAssetsRootDir,
+    path.join(__dirname, "interactiveNativeAppClient.js")
+  );
+
+  const urlRelativeToRoot = "/" + slash(relPathToFake);
+
+  res.redirect(urlRelativeToRoot);
+});
+
 //Workaround for https://github.com/ReactiveX/rxjs/issues/4416
 app.use("/node_modules/rxjs/", (req, res, next) => {
   if (!req.url.includes(".js")) {
