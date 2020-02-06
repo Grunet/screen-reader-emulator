@@ -1,5 +1,5 @@
-import { createConnectionToDevtoolsScripts } from "./devtoolsClientAdapter.js";
-import { createConnectionToNativeApp } from "./nativeAppClientAdapter.js";
+import { createConnectionToDevtoolsScripts } from "./adapters/devtoolsClientAdapter.js";
+import { createConnectionToNativeApp } from "./adapters/nativeAppClientAdapter.js";
 
 console.log("This is from the background script");
 

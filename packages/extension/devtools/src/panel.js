@@ -1,4 +1,4 @@
-import { createConnectionToBackgroundScripts } from "./backgroundClientAdapter.js";
+import { createConnectionToBackgroundScripts } from "./adapters/backgroundClientAdapter.js";
 
 console.log("This is from the panel's javascript");
 
