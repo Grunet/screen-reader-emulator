@@ -1,4 +1,4 @@
-import { connectToNativeApp } from "../../../../nativeApp/src/nativeAppClient.js";
+import { connectToNativeApp } from "../../../../nativeApp/src/extensionClient.js";
 
 class NativeAppClientAdapter {
   constructor(nativeAppClient) {

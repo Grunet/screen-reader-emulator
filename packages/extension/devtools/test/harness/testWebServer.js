@@ -13,7 +13,7 @@ app.get("/", (req, res) => {
 });
 
 //Switching in test doubles
-app.get("/extension/background/src/backgroundClient.js", (req, res) => {
+app.get("/extension/background/src/contentClient.js", (req, res) => {
   const relPathToFake = path.relative(
     staticAssetsRootDir,
     path.join(__dirname, "interactiveBackgroundClient.js")

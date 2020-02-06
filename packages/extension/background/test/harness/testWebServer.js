@@ -13,7 +13,7 @@ app.get("/", (req, res) => {
 });
 
 //Switching in test doubles
-app.get("/extension/devtools/src/devtoolsClient.js", (req, res) => {
+app.get("/extension/devtools/src/backgroundClient.js", (req, res) => {
   const relPathToFake = path.relative(
     staticAssetsRootDir,
     path.join(__dirname, "interactiveDevtoolsClient.js")
@@ -24,7 +24,7 @@ app.get("/extension/devtools/src/devtoolsClient.js", (req, res) => {
   res.redirect(urlRelativeToRoot);
 });
 
-app.get("/nativeApp/src/nativeAppClient.js", (req, res) => {
+app.get("/nativeApp/src/extensionClient.js", (req, res) => {
   const relPathToFake = path.relative(
     staticAssetsRootDir,
     path.join(__dirname, "interactiveNativeAppClient.js")

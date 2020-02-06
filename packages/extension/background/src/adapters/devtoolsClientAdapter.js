@@ -1,4 +1,4 @@
-import { connectToDevtoolsScripts } from "../../../devtools/src/devtoolsClient.js";
+import { connectToDevtoolsScripts } from "../../../devtools/src/backgroundClient.js";
 
 class DevtoolsClientAdapter {
   constructor(devtoolsClient) {
