@@ -1,4 +1,4 @@
-import { connectToBackgroundScripts } from "../../../background/src/contentClient.js";
+import { connectToBackgroundScripts } from "../../../background/src/clients/contentClient.js";
 
 class BackgroundClientAdapter {
   constructor(backgroundClient) {

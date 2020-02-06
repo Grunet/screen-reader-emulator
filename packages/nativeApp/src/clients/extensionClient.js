@@ -1,4 +1,4 @@
-import { createStreamsFromPort } from "../../lib/src/portToStreams.js";
+import { createStreamsFromPort } from "../../../lib/src/portToStreams.js";
 
 /* global NATIVE_APP_ID */
 
