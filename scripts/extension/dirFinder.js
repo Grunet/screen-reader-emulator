@@ -1,17 +1,17 @@
 const path = require("path");
 
 function findMatchingOutDir(scriptsSubPath) {
-  let scriptsDirParts = scriptsSubPath.split(path.sep);
-  let index = scriptsDirParts.indexOf("scripts");
+  const scriptsDirParts = scriptsSubPath.split(path.sep);
+  const index = scriptsDirParts.indexOf("scripts");
   if (index < 0) {
     throw new Error("Unable to find source directory from scripts directory");
   }
 
-  let outDirParts = scriptsDirParts.slice();
+  const outDirParts = scriptsDirParts.slice();
   outDirParts[index] = "out";
 
-  let outDirAbsPath = path.join(...outDirParts);
-  let outDirRelPath = path.relative(scriptsSubPath, outDirAbsPath);
+  const outDirAbsPath = path.join(...outDirParts);
+  const outDirRelPath = path.relative(scriptsSubPath, outDirAbsPath);
 
   return {
     abs: outDirAbsPath,
@@ -20,17 +20,17 @@ function findMatchingOutDir(scriptsSubPath) {
 }
 
 function findMatchingPkgDir(scriptsSubPath) {
-  let scriptsDirParts = scriptsSubPath.split(path.sep);
-  let index = scriptsDirParts.indexOf("scripts");
+  const scriptsDirParts = scriptsSubPath.split(path.sep);
+  const index = scriptsDirParts.indexOf("scripts");
   if (index < 0) {
     throw new Error("Unable to find source directory from scripts directory");
   }
 
-  let pkgDirParts = scriptsDirParts.slice();
+  const pkgDirParts = scriptsDirParts.slice();
   pkgDirParts[index] = "packages";
 
-  let pkgDirAbsPath = path.join(...pkgDirParts);
-  let pkgDirRelPath = path.relative(scriptsSubPath, pkgDirAbsPath);
+  const pkgDirAbsPath = path.join(...pkgDirParts);
+  const pkgDirRelPath = path.relative(scriptsSubPath, pkgDirAbsPath);
 
   return {
     abs: pkgDirAbsPath,

@@ -3,39 +3,39 @@ const glob = require("glob");
 const jsonfile = require("jsonfile");
 
 async function getVersionNumber() {
-  let constantsFilePath = await __findPathToConstantsFile();
+  const constantsFilePath = await __findPathToConstantsFile();
 
-  let versionNumber = await __getVersionFromFile(constantsFilePath);
+  const versionNumber = await __getVersionFromFile(constantsFilePath);
 
   return versionNumber;
 }
 
 async function getNativeAppId() {
-  let constantsFilePath = await __findPathToConstantsFile();
+  const constantsFilePath = await __findPathToConstantsFile();
 
-  let nativeAppId = await __getNativeAppIdFromFile(constantsFilePath);
+  const nativeAppId = await __getNativeAppIdFromFile(constantsFilePath);
 
   return nativeAppId;
 }
 
 async function __findPathToConstantsFile() {
-  let sourceDir = __findRootPackageDirectory().abs;
+  const sourceDir = __findRootPackageDirectory().abs;
 
   return __findSharedConstantsJson(sourceDir);
 }
 
 function __findRootPackageDirectory() {
-  let scriptsDirParts = __dirname.split(path.sep);
-  let index = scriptsDirParts.indexOf("scripts");
+  const scriptsDirParts = __dirname.split(path.sep);
+  const index = scriptsDirParts.indexOf("scripts");
   if (index < 0) {
     throw new Error("Unable to find source directory from scripts directory");
   }
 
-  let sourceDirParts = scriptsDirParts.slice(0, index + 1);
+  const sourceDirParts = scriptsDirParts.slice(0, index + 1);
   sourceDirParts[index] = "packages";
 
-  let sourceDirAbsPath = path.join(...sourceDirParts);
-  let sourceDirRelPath = path.relative(__dirname, sourceDirAbsPath);
+  const sourceDirAbsPath = path.join(...sourceDirParts);
+  const sourceDirRelPath = path.relative(__dirname, sourceDirAbsPath);
 
   return {
     abs: sourceDirAbsPath,
@@ -70,13 +70,13 @@ async function __findSharedConstantsJson(sourceDir) {
 }
 
 async function __getVersionFromFile(filepath) {
-  let constantsDict = await __getConstantsDict(filepath);
+  const constantsDict = await __getConstantsDict(filepath);
 
   return constantsDict["version"];
 }
 
 async function __getNativeAppIdFromFile(filepath) {
-  let constantsDict = await __getConstantsDict(filepath);
+  const constantsDict = await __getConstantsDict(filepath);
 
   return constantsDict["ids"]["nativeApp"];
 }

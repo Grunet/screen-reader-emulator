@@ -6,7 +6,7 @@ async function connectToDevtoolsScripts() {
 
     function __onConnected(port) {
       if (__isDevtoolsPort(port)) {
-        let portAsStreams = createStreamsFromPort(port);
+        const portAsStreams = createStreamsFromPort(port);
 
         resolve(portAsStreams);
       }

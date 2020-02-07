@@ -19,11 +19,11 @@ function clean() {
 }
 
 async function build() {
-  let extensionSourceDir = findMatchingPkgDir(__dirname);
-  let outDir = findMatchingOutDir(__dirname);
+  const extensionSourceDir = findMatchingPkgDir(__dirname);
+  const outDir = findMatchingOutDir(__dirname);
 
-  let versionNumber = await getVersionNumber();
-  let nativeAppId = await getNativeAppId();
+  const versionNumber = await getVersionNumber();
+  const nativeAppId = await getNativeAppId();
 
   const devtoolsBundleFilename = "devtools.js";
   const panelBundleFilename = "devtools-panel.js";
@@ -71,7 +71,7 @@ function __getJsBundlingStream(
   bundleFilenames,
   globalConstants
 ) {
-  let globalConstantsAsJSON = Object.fromEntries(
+  const globalConstantsAsJSON = Object.fromEntries(
     Object.entries(globalConstants).map(([k, v]) => [k, JSON.stringify(v)])
   );
 
@@ -117,7 +117,7 @@ function __getHtmlCreationStream(
 }
 
 function __getManifestHydrationStream(globForManifest, inputs) {
-  let {
+  const {
     devtoolsHtmlFilename,
     backgroundBundleFilename,
     versionNumber
