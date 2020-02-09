@@ -2,5 +2,6 @@
   "description": "A browser extension to operate screen readers with your mouse instead of hotkeys",
   "manifest_version": 2,
   "name": "Screen Reader Emulator",
-  "version": "0.0.0"
+  "version": "0.0.0",
+  "permissions": ["nativeMessaging"]
 }
