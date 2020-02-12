@@ -5,12 +5,12 @@ class NativeAppClientAdapter {
     this.__nativeAppClient = nativeAppClient;
   }
 
-  get inputs$() {
-    return this.__nativeAppClient.inputs$;
+  get input$() {
+    return this.__nativeAppClient.input$;
   }
 
-  get outputs$() {
-    return this.__nativeAppClient.outputs$;
+  get output$() {
+    return this.__nativeAppClient.output$;
   }
 }
 

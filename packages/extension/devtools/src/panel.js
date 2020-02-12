@@ -3,6 +3,6 @@ import { createConnectionToBackgroundScripts } from "./adapters/backgroundClient
 console.log("This is from the panel's javascript");
 
 const backgroundConnection = createConnectionToBackgroundScripts();
-backgroundConnection.inputs$.next(
+backgroundConnection.input$.next(
   "This is from the panel's javascript - to the background connection"
 );

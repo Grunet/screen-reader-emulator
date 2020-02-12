@@ -5,12 +5,12 @@ class BackgroundClientAdapter {
     this.__backgroundClient = backgroundClient;
   }
 
-  get inputs$() {
-    return this.__backgroundClient.inputs$;
+  get input$() {
+    return this.__backgroundClient.input$;
   }
 
-  get outputs$() {
-    return this.__backgroundClient.outputs$;
+  get output$() {
+    return this.__backgroundClient.output$;
   }
 }
 

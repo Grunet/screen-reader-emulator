@@ -5,12 +5,12 @@ class DevtoolsClientAdapter {
     this.__devtoolsClient = devtoolsClient;
   }
 
-  get inputs$() {
-    return this.__devtoolsClient.inputs$;
+  get input$() {
+    return this.__devtoolsClient.input$;
   }
 
-  get outputs$() {
-    return this.__devtoolsClient.outputs$;
+  get output$() {
+    return this.__devtoolsClient.output$;
   }
 }
 

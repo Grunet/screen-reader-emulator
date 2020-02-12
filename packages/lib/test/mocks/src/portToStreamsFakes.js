@@ -2,13 +2,13 @@ import { Subject } from "../../../../node_modules/rxjs/_esm2015/index.js"; //Wor
 
 class InteractiveFake {
   constructor(globalPropName) {
-    this.__inputs$ = new Subject();
-    this.__inputs$.subscribe({
+    this.__input$ = new Subject();
+    this.__input$.subscribe({
       next: msg => console.dir(msg) //Logging to the console instead of posting to the port
     });
 
-    this.__outputs$ = new Subject(); //Switched to a Subject to allow for manual updates to the stream
-    this.__getRefOnGlobalFakes(globalPropName).outputs$ = this.__outputs$; //So it can be accessed from the console and updated with calls to "next(msg)"
+    this.__output$ = new Subject(); //Switched to a Subject to allow for manual updates to the stream
+    this.__getRefOnGlobalFakes(globalPropName).output$ = this.__output$; //So it can be accessed from the console and updated with calls to "next(msg)"
   }
 
   __getRefOnGlobalFakes(propName) {
@@ -18,11 +18,11 @@ class InteractiveFake {
     return globalThis.Fakes[propName];
   }
 
-  get inputs$() {
-    return this.__inputs$;
+  get input$() {
+    return this.__input$;
   }
-  get outputs$() {
-    return this.__outputs$;
+  get output$() {
+    return this.__output$;
   }
 }
 
