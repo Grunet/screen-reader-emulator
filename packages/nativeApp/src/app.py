@@ -1,14 +1,14 @@
 import sys
 import asyncio
 
-from extension.background.src.clients.nativeClient import connectToExtension
+from nativeApp.src.adapters.extensionClientAdapter import createConnectionToExtension
 
 
 async def main():
-    a = connectToExtension(sys.stdin, sys.stdout)
+    extensionConnection = createConnectionToExtension(sys.stdin, sys.stdout)
 
-    a.inputStream.on_next("This is from the native app")
-    a.outputStream.subscribe(on_next=lambda msg: print(msg))
+    extensionConnection.inputStream.on_next("This is from the native app")
+    extensionConnection.outputStream.subscribe(on_next=lambda msg: print(msg))
 
     await __waitForOutstandingTasksToFinish()
 
