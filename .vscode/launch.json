@@ -1,6 +1,12 @@
 {
   "configurations": [
     {
+      "name": "Python: Attach using Process Id",
+      "type": "python",
+      "request": "attach",
+      "processId": "${command:pickProcess}"
+    },
+    {
       "type": "node",
       "request": "launch",
       "name": "Devtools test harness",

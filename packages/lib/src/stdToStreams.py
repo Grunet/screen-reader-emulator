@@ -38,25 +38,19 @@ class _StandardStreamsToRxStreamsAdapter:
         self.__stdoutOfApp.buffer.flush()
 
     async def __pollForOutput(self):
-        expectingMoreOutput = True
+        while True:
+            decodedOutput = self.__getAndDecodeOutput()
 
-        while expectingMoreOutput:
-            try:
-                decodedOutput = self.__getAndDecodeOutput()
+            if decodedOutput:
+                self.__outputStream.on_next(decodedOutput)
 
-                if decodedOutput:
-                    self.__outputStream.on_next(decodedOutput)
-
-                await asyncio.sleep(0)
-
-            except EOFError:
-                expectingMoreOutput = False
+            await asyncio.sleep(0)
 
     def __getAndDecodeOutput(self):
         rawLength = self.__stdinOfApp.buffer.read(4)
 
         if len(rawLength) == 0:
-            raise EOFError()
+            return None
 
         messageLength = struct.unpack("@I", rawLength)[0]
         message = self.__stdinOfApp.buffer.read(messageLength).decode("utf-8")
