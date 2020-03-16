@@ -10,6 +10,14 @@ async function getVersionNumber() {
   return versionNumber;
 }
 
+async function getExtensionId() {
+  const constantsFilePath = await __findPathToConstantsFile();
+
+  const extensionId = await __getExtensionIdFromFile(constantsFilePath);
+
+  return extensionId;
+}
+
 async function getNativeAppId() {
   const constantsFilePath = await __findPathToConstantsFile();
 
@@ -75,6 +83,12 @@ async function __getVersionFromFile(filepath) {
   return constantsDict["version"];
 }
 
+async function __getExtensionIdFromFile(filepath) {
+  const constantsDict = await __getConstantsDict(filepath);
+
+  return constantsDict["ids"]["extension"];
+}
+
 async function __getNativeAppIdFromFile(filepath) {
   const constantsDict = await __getConstantsDict(filepath);
 
@@ -86,4 +100,5 @@ async function __getConstantsDict(filepath) {
 }
 
 module.exports.getVersionNumber = getVersionNumber;
+module.exports.getExtensionId = getExtensionId;
 module.exports.getNativeAppId = getNativeAppId;

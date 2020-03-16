@@ -11,7 +11,11 @@ const del = require("del");
 const path = require("path");
 const slash = require("slash");
 
-const { getVersionNumber, getNativeAppId } = require("./constantsExtractor.js");
+const {
+  getVersionNumber,
+  getExtensionId,
+  getNativeAppId
+} = require("./constantsExtractor.js");
 const { findMatchingOutDir, findMatchingPkgDir } = require("./dirFinder.js");
 
 function clean() {
@@ -23,6 +27,7 @@ async function build() {
   const outDir = findMatchingOutDir(__dirname);
 
   const versionNumber = await getVersionNumber();
+  const extensionId = await getExtensionId();
   const nativeAppId = await getNativeAppId();
 
   const devtoolsBundleFilename = "devtools.js";
@@ -61,7 +66,8 @@ async function build() {
     __getManifestHydrationStream(extensionSourceDir.rel + "/**/manifest.json", {
       devtoolsHtmlFilename: devtoolsHtmlFilename,
       backgroundBundleFilename: backgroundBundleFilename,
-      versionNumber: versionNumber
+      versionNumber: versionNumber,
+      extensionId: extensionId
     })
   ).pipe(dest(slash(outDir.rel)));
 }
@@ -120,11 +126,17 @@ function __getManifestHydrationStream(globForManifest, inputs) {
   const {
     devtoolsHtmlFilename,
     backgroundBundleFilename,
-    versionNumber
+    versionNumber,
+    extensionId
   } = inputs;
 
   return src(slash(globForManifest)).pipe(
     jeditor({
+      browser_specific_settings: {
+        gecko: {
+          id: extensionId
+        }
+      },
       devtools_page: devtoolsHtmlFilename,
       background: {
         scripts: [backgroundBundleFilename]
