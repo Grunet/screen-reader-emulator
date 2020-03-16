@@ -5,25 +5,19 @@ const jsonfile = require("jsonfile");
 async function getVersionNumber() {
   const constantsFilePath = await __findPathToConstantsFile();
 
-  const versionNumber = await __getVersionFromFile(constantsFilePath);
-
-  return versionNumber;
+  return __getVersionFromFile(constantsFilePath);
 }
 
 async function getExtensionId() {
   const constantsFilePath = await __findPathToConstantsFile();
 
-  const extensionId = await __getExtensionIdFromFile(constantsFilePath);
-
-  return extensionId;
+  return __getExtensionIdFromFile(constantsFilePath);
 }
 
 async function getNativeAppId() {
   const constantsFilePath = await __findPathToConstantsFile();
 
-  const nativeAppId = await __getNativeAppIdFromFile(constantsFilePath);
-
-  return nativeAppId;
+  return __getNativeAppIdFromFile(constantsFilePath);
 }
 
 async function __findPathToConstantsFile() {
