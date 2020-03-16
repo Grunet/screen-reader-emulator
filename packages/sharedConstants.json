@@ -5,7 +5,7 @@
     }
   },
   "ids": {
-    "extension": "screen-reader-emulator",
+    "extension": "screen_reader_emulator@dummy.org",
     "nativeApp": "screen_reader_emulator_native_app"
   },
   "version": "0.0.1"
