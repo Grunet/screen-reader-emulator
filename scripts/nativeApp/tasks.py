@@ -17,7 +17,7 @@ def clean(c):
     if outDir.is_dir():
         shutil.rmtree(outDir)
 
-    # TODO - Should this be cleaning up any registry keys too?
+    # On Windows, manually cleanup any registry settings created by the build
 
 
 @task
@@ -123,4 +123,5 @@ def __createRefToManifest(manifestName, pathToManifest):
         key.Close()
 
     else:
-        raise NotImplementedError("The build currently only works on Windows")
+        raise NotImplementedError("The build step currently only works on Windows")
+
