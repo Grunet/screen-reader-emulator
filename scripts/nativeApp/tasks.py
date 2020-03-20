@@ -8,7 +8,7 @@ import json
 import shutil
 import subprocess
 
-ENTRY_POINT = "app.py"
+PATH_TO_ENTRY_POINT_FROM_PACKAGE_ROOT = Path("nativeApp", "src", "app.py")
 
 
 @task
@@ -17,17 +17,23 @@ def clean(c):
     if outDir.is_dir():
         shutil.rmtree(outDir)
 
+    # TODO - Should this be cleaning up any registry keys too?
+
 
 @task
 def build(c):
-    outDir = findMatchingOutDir(__file__)
-    pkgDir = findMatchingPkgDir(__file__)
+    outDir = findMatchingOutDir(__file__)  # out/nativeApp
+    nativeAppPkgDir = findMatchingPkgDir(__file__)  # packages/nativeApp
+    pkgDir = nativeAppPkgDir.parents[0]
 
     __copySrcToOut(outDir, pkgDir)
-    pathToExe = __createExeFromCopiedSrc(outDir, ENTRY_POINT)
+
+    pathToExe = __createExeFromCopiedSrc(
+        outDir, pkgDir, PATH_TO_ENTRY_POINT_FROM_PACKAGE_ROOT
+    )
 
     nameForManifest, pathToHydratedManifest = __hydrateManifest(
-        outDir, pkgDir, pathToExe
+        outDir, nativeAppPkgDir, pathToExe
     )
 
     __createRefToManifest(nameForManifest, pathToHydratedManifest)
@@ -37,26 +43,49 @@ def build(c):
 def start(c):
     outDir = findMatchingOutDir(__file__)
 
-    pathToExe = __getPathToExe(outDir, ENTRY_POINT)
+    pathToExe = __getPathToExe(outDir, PATH_TO_ENTRY_POINT_FROM_PACKAGE_ROOT)
 
     subprocess.call(str(pathToExe.resolve()))
 
 
-def __copySrcToOut(outDir, nativeAppPkgDir):
-    shutil.copytree(nativeAppPkgDir / "src", outDir)
+def __copySrcToOut(outDir, pkgDir):
+    shutil.copytree(pkgDir, outDir, ignore=__excludeNonNativeAppRelatedSrcFiles)
 
 
-def __createExeFromCopiedSrc(outDir, entryPoint):
-    subprocess.call(["pyinstaller", entryPoint], cwd=outDir)
-
-    return __getPathToExe(outDir, entryPoint)
-
-
-def __getPathToExe(outDir, entryPoint):
-    entryPointFilename = Path(entryPoint).stem  # Removes the ".py" extension
-    pathToExe = (outDir / "dist" / entryPointFilename / entryPointFilename).with_suffix(
-        ".exe"
+def __excludeNonNativeAppRelatedSrcFiles(path, names):
+    pathObj = Path(path)
+    return set(
+        name for name in names if not (pathObj / name).is_dir() and ".py" not in name
     )
+
+
+def __createExeFromCopiedSrc(rootDir, pkgDir, relPathToEntryPoint):
+
+    absPathToPkgVirtualEnv = (
+        subprocess.run(["pipenv", "--venv"], cwd=pkgDir, stdout=subprocess.PIPE)
+        .stdout.decode("utf-8")
+        .strip()
+    )  # This assumes the virtualenv has been created
+
+    absPathToDependencies = Path(absPathToPkgVirtualEnv, "Lib", "site-packages")
+
+    subprocess.call(
+        [
+            "pyinstaller",
+            "--paths",
+            str(absPathToDependencies),
+            str(relPathToEntryPoint),
+        ],
+        cwd=rootDir,
+    )
+
+    return __getPathToExe(rootDir, relPathToEntryPoint)
+
+
+def __getPathToExe(rootDir, relPathToEntryPoint):
+    pathToExe = (
+        rootDir / "dist" / relPathToEntryPoint.stem / relPathToEntryPoint.stem
+    ).with_suffix(".exe")
 
     return pathToExe
 
