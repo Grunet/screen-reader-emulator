@@ -79,11 +79,38 @@ def __createExeFromCopiedSrc(rootDir, pkgDir, relPathToEntryPoint):
 
 
 def __getPathToPkgVirtualEnv(pkgDir):
-    return Path(
+    doesVirtualEnvExist, objPathToPkgVirtualEnv = __checkForPkgVirtualEnv(pkgDir)
+
+    if doesVirtualEnvExist is True:
+        return objPathToPkgVirtualEnv
+    else:
+        subprocess.call(["pipenv", "install"], cwd=pkgDir)
+
+        doesVirtualEnvExist, objPathToPkgVirtualEnv = __checkForPkgVirtualEnv(pkgDir)
+        if doesVirtualEnvExist is True:
+            return objPathToPkgVirtualEnv
+        else:
+            raise FileNotFoundError(
+                "Attempted to install the virtualenv from the Pipfile,"
+                / " but still couldn't find it"
+            )
+
+
+def __checkForPkgVirtualEnv(pkgDir):
+    strPathToPkgVirtualEnv = (
         subprocess.run(["pipenv", "--venv"], cwd=pkgDir, stdout=subprocess.PIPE)
         .stdout.decode("utf-8")
         .strip()
-    )  # This assumes the virtualenv has been created
+    )
+
+    objPathToPkgVirtualEnv = Path(strPathToPkgVirtualEnv)
+
+    # The former check is needed since the latter returns true for Path("")
+    doesPathExist = (
+        len(strPathToPkgVirtualEnv) != 0
+    ) and objPathToPkgVirtualEnv.exists()
+
+    return doesPathExist, objPathToPkgVirtualEnv
 
 
 def __getPathToExe(rootDir, relPathToEntryPoint):
