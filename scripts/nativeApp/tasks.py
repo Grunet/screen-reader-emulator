@@ -61,13 +61,9 @@ def __excludeNonNativeAppRelatedSrcFiles(path, names):
 
 def __createExeFromCopiedSrc(rootDir, pkgDir, relPathToEntryPoint):
 
-    absPathToPkgVirtualEnv = (
-        subprocess.run(["pipenv", "--venv"], cwd=pkgDir, stdout=subprocess.PIPE)
-        .stdout.decode("utf-8")
-        .strip()
-    )  # This assumes the virtualenv has been created
+    absPathToPkgVirtualEnv = __getPathToPkgVirtualEnv(pkgDir)
 
-    absPathToDependencies = Path(absPathToPkgVirtualEnv, "Lib", "site-packages")
+    absPathToDependencies = absPathToPkgVirtualEnv / "Lib" / "site-packages"
 
     subprocess.call(
         [
@@ -80,6 +76,14 @@ def __createExeFromCopiedSrc(rootDir, pkgDir, relPathToEntryPoint):
     )
 
     return __getPathToExe(rootDir, relPathToEntryPoint)
+
+
+def __getPathToPkgVirtualEnv(pkgDir):
+    return Path(
+        subprocess.run(["pipenv", "--venv"], cwd=pkgDir, stdout=subprocess.PIPE)
+        .stdout.decode("utf-8")
+        .strip()
+    )  # This assumes the virtualenv has been created
 
 
 def __getPathToExe(rootDir, relPathToEntryPoint):
