@@ -8,7 +8,10 @@ async def main():
     extensionConnection = createConnectionToExtension(sys.stdin, sys.stdout)
 
     extensionConnection.inputStream.on_next("This is from the native app")
-    extensionConnection.outputStream.subscribe(on_next=lambda msg: print(msg))
+    # extensionConnection.outputStream.subscribe(on_next=lambda msg: print(msg))
+    extensionConnection.outputStream.subscribe(
+        on_next=lambda msg: extensionConnection.inputStream.on_next(msg)
+    )
 
     await __waitForOutstandingTasksToFinish()
 

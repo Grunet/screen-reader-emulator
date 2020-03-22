@@ -15,3 +15,7 @@ const nativeAppConnection = createConnectionToNativeApp();
 nativeAppConnection.input$.next(
   "This is from the background script - being sent to the native app"
 );
+
+nativeAppConnection.output$.subscribe({
+  next: msg => console.dir(msg)
+});
