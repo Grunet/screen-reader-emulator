@@ -39,15 +39,15 @@ class _StandardStreamsToRxStreamsAdapter:
 
     async def __pollForOutput(self):
         while True:
-            decodedOutput = self.__getAndDecodeOutput()
+            decodedOutput = await self.__getAndDecodeOutput()
 
             if decodedOutput:
                 self.__outputStream.on_next(decodedOutput)
 
-            await asyncio.sleep(0)
-
-    def __getAndDecodeOutput(self):
-        rawLength = self.__stdinOfApp.buffer.read(4)
+    async def __getAndDecodeOutput(self):
+        rawLength = await asyncio.get_running_loop().run_in_executor(
+            None, self.__doBlockingReadFromStdin
+        )
 
         if len(rawLength) == 0:
             return None
@@ -56,6 +56,9 @@ class _StandardStreamsToRxStreamsAdapter:
         message = self.__stdinOfApp.buffer.read(messageLength).decode("utf-8")
 
         return json.loads(message)
+
+    def __doBlockingReadFromStdin(self):
+        return self.__stdinOfApp.buffer.read(4)
 
 
 def convertStdToRxStreams(stdin, stdout):
