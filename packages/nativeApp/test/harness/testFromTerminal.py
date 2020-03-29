@@ -24,6 +24,14 @@ sys.modules[
     "plugins.nvda.src.clients.nativeAppClient"
 ] = plugins.nvda.test.mocks.src.clients.nativeAppClientFakes
 
+import types
+
+Fakes = types.SimpleNamespace()
+Fakes.Stdin = types.SimpleNamespace()
+Fakes.Stdin.on_next = sendMessageToStdin  # Not an actual Rx observer/subject
+Fakes.NvdaClient = (
+    plugins.nvda.test.mocks.src.clients.nativeAppClientFakes.interactiveFake
+)
 
 # Running the nativeApp in a separate thread to allow for interactive input
 def __runApp():
