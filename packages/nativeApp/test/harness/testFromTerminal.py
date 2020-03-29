@@ -4,7 +4,8 @@
 # 2) Use the Python launch.json debug config to attach to this process
 # 3) Then type the keyword "continue" at the PDB prompt
 
-from nativeApp.test.harness.interactiveMocks import Fakes
+# Use the properties on this object to simulate various kinds of input
+from nativeApp.test.harness.interactiveMocks import Fakes  # noqa
 
 from threading import Thread
 
