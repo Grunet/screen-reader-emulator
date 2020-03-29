@@ -4,26 +4,29 @@
 # 2) Use the Python launch.json debug config to attach to this process
 # 3) Then type the keyword "continue" at the PDB prompt
 
+
+from threading import Thread
+
+
+# Setting up mocks
 from nativeApp.test.mocks.dependencies.stdinMocks import (  # noqa
     mockStdinBuffer,
     sendMessageToStdin,  # Use this to simulate input to the nativeApp from the browser
 )
 
-from threading import Thread
+mockStdinBuffer()
 
 import plugins.nvda.test.mocks.src.clients.nativeAppClientFakes
+
+import sys
+
+sys.modules[
+    "plugins.nvda.src.clients.nativeAppClient"
+] = plugins.nvda.test.mocks.src.clients.nativeAppClientFakes
 
 
 # Running the nativeApp in a separate thread to allow for interactive input
 def __runApp():
-    mockStdinBuffer()
-
-    import sys
-
-    sys.modules[
-        "plugins.nvda.src.clients.nativeAppClient"
-    ] = plugins.nvda.test.mocks.src.clients.nativeAppClientFakes
-
     import runpy
 
     runpy.run_module("nativeApp.src.app")
