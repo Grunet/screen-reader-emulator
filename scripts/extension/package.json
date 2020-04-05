@@ -21,7 +21,7 @@
     "jsonfile": "^5.0.0",
     "merge-stream": "^2.0.0",
     "slash": "^3.0.0",
-    "web-ext": "^4.0.0",
+    "web-ext": "^4.1.0",
     "webpack": "^4.41.3",
     "webpack-cli": "^3.3.10",
     "webpack-stream": "^5.2.1"
