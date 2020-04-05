@@ -1,7 +1,7 @@
 import { createStreamsFromPort } from "../../../../lib/src/portToStreams.js";
 
 async function connectToDevtoolsScripts() {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     browser.runtime.onConnect.addListener(__onConnected);
 
     function __onConnected(port) {

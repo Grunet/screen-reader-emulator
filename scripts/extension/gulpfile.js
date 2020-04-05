@@ -14,7 +14,7 @@ const slash = require("slash");
 const {
   getVersionNumber,
   getExtensionId,
-  getNativeAppId
+  getNativeAppId,
 } = require("./constantsExtractor.js");
 const { findMatchingOutDir, findMatchingPkgDir } = require("./dirFinder.js");
 
@@ -45,12 +45,12 @@ async function build() {
       {
         devtools: devtoolsBundleFilename,
         panel: panelBundleFilename,
-        background: backgroundBundleFilename
+        background: backgroundBundleFilename,
       },
       {
         NATIVE_APP_ID: nativeAppId,
         ASSETS_PATH_TO_ICON: iconFilename,
-        DEVTOOLS_PATH_TO_PANEL_HTML: panelHtmlFilename
+        DEVTOOLS_PATH_TO_PANEL_HTML: panelHtmlFilename,
       }
     ),
     __getHtmlCreationStream(
@@ -67,7 +67,7 @@ async function build() {
       devtoolsHtmlFilename: devtoolsHtmlFilename,
       backgroundBundleFilename: backgroundBundleFilename,
       versionNumber: versionNumber,
-      extensionId: extensionId
+      extensionId: extensionId,
     })
   ).pipe(dest(slash(outDir.rel)));
 }
@@ -103,11 +103,11 @@ function __getJsBundlingStream(
             "background",
             "src",
             "background.js"
-          )
+          ),
         },
         output: {
-          filename: "[name]"
-        }
+          filename: "[name]",
+        },
       })
     );
 }
@@ -127,21 +127,21 @@ function __getManifestHydrationStream(globForManifest, inputs) {
     devtoolsHtmlFilename,
     backgroundBundleFilename,
     versionNumber,
-    extensionId
+    extensionId,
   } = inputs;
 
   return src(slash(globForManifest)).pipe(
     jeditor({
       browser_specific_settings: {
         gecko: {
-          id: extensionId
-        }
+          id: extensionId,
+        },
       },
       devtools_page: devtoolsHtmlFilename,
       background: {
-        scripts: [backgroundBundleFilename]
+        scripts: [backgroundBundleFilename],
       },
-      version: versionNumber
+      version: versionNumber,
     })
   );
 }

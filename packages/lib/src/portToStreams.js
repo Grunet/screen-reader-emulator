@@ -4,11 +4,11 @@ class PortToStreamsAdapter {
   constructor(port) {
     this.__input$ = new Subject();
     this.__input$.subscribe({
-      next: msg => port.postMessage(msg)
+      next: (msg) => port.postMessage(msg),
     });
 
-    this.__output$ = new Observable(subscriber => {
-      port.onMessage.addListener(msg => subscriber.next(msg));
+    this.__output$ = new Observable((subscriber) => {
+      port.onMessage.addListener((msg) => subscriber.next(msg));
     });
   }
 

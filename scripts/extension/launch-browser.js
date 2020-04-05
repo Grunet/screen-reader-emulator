@@ -1,6 +1,6 @@
 const path = require("path");
 const {
-  exec
+  exec,
   // spawn - wasn't able to get this working because of issues similar to the ones here:
   // https://github.com/nodejs/node/issues/3675
   // https://stackoverflow.com/questions/17516772/using-nodejss-spawn-causes-unknown-option-and-error-spawn-enoent-err/17537559#17537559
@@ -32,7 +32,7 @@ function __getParametersForLaunch() {
 
   return {
     cmd: launchBrowserWithExtCmd,
-    cwd: outDir.abs
+    cwd: outDir.abs,
   };
 }
 

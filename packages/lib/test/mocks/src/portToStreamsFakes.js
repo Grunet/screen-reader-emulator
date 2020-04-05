@@ -4,7 +4,7 @@ class InteractiveFake {
   constructor(globalPropName) {
     this.__input$ = new Subject();
     this.__input$.subscribe({
-      next: msg => console.dir(msg) //Logging to the console instead of posting to the port
+      next: (msg) => console.dir(msg), //Logging to the console instead of posting to the port
     });
 
     this.__output$ = new Subject(); //Switched to a Subject to allow for manual updates to the stream

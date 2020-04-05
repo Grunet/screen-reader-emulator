@@ -15,7 +15,7 @@ function findMatchingOutDir(scriptsSubPath) {
 
   return {
     abs: outDirAbsPath,
-    rel: outDirRelPath
+    rel: outDirRelPath,
   };
 }
 
@@ -34,7 +34,7 @@ function findMatchingPkgDir(scriptsSubPath) {
 
   return {
     abs: pkgDirAbsPath,
-    rel: pkgDirRelPath
+    rel: pkgDirRelPath,
   };
 }
 

@@ -3,7 +3,7 @@ import { createConnectionToNativeApp } from "./adapters/nativeAppClientAdapter.j
 
 console.log("This is from the background script");
 
-(async function() {
+(async function () {
   const devtoolsConnection = await createConnectionToDevtoolsScripts();
 
   devtoolsConnection.input$.next(
@@ -17,5 +17,5 @@ nativeAppConnection.input$.next(
 );
 
 nativeAppConnection.output$.subscribe({
-  next: msg => console.dir(msg)
+  next: (msg) => console.dir(msg),
 });

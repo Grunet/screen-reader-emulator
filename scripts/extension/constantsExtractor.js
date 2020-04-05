@@ -41,19 +41,19 @@ function __findRootPackageDirectory() {
 
   return {
     abs: sourceDirAbsPath,
-    rel: sourceDirRelPath
+    rel: sourceDirRelPath,
   };
 }
 
 async function __findSharedConstantsJson(sourceDir) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     const opts = {
       cwd: sourceDir,
       nodir: true,
-      realpath: true
+      realpath: true,
     };
 
-    glob("**/sharedConstants.json", opts, function(err, files) {
+    glob("**/sharedConstants.json", opts, function (err, files) {
       if (err) {
         reject(err);
       } else {
