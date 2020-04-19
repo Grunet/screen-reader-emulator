@@ -1,9 +1,9 @@
 from multiprocessing.connection import Client
 
-from plugins.nvda.src.commConstants import address, authkey
+from plugins.nvda.src.commConstants import _address, _authkey
 
 # This will throw an exception if the plugin hasn't setup the Listener yet
-conn = Client(address, authkey=authkey)
+conn = Client(_address, authkey=_authkey)
 
 while True:
     output = conn.recv()

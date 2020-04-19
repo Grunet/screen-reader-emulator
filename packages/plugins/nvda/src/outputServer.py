@@ -2,7 +2,7 @@ from multiprocessing.connection import Listener
 from threading import Thread
 from collections import deque
 
-from plugins.nvda.src.commConstants import address, authkey
+from plugins.nvda.src.commConstants import _address, _authkey
 
 
 class _OutputServer:
@@ -14,7 +14,7 @@ class _OutputServer:
         Thread(target=self.__waitForClientToConnect, daemon=True).start()
 
     def __waitForClientToConnect(self):
-        listener = Listener(address, authkey=authkey)
+        listener = Listener(_address, authkey=_authkey)
         self.__connection = (
             listener.accept()
         )  # this is blocking until a client connects

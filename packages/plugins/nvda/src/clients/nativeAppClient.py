@@ -6,7 +6,7 @@ from rx.operators import map, combine_latest
 
 from plugins.nvda.src.commConstants import OutputKeys
 from plugins.nvda.src.plugin import rehydrateMessage
-from plugins.nvda.src.commConstants import address, authkey
+from plugins.nvda.src.commConstants import _address, _authkey
 
 _NVDA_EXPECTED_STARTUP_TIME = 2
 _PADDING_FOR_NVDA_STARTUP_TIME = 1
@@ -53,7 +53,7 @@ class _NativeAppClient:
         while True:
             try:
                 self.__serverConnection = Client(
-                    address, authkey
+                    _address, _authkey
                 )  # Seems to wait ~3s before exception is raised
 
                 self.__connectionStatusStream.on_next({OutputKeys.IS_CONNECTED: True})
