@@ -11,6 +11,26 @@
       "presentation": {
         "reveal": "always"
       }
+    },
+    {
+      "label": "Start NVDA plugin test harness",
+      "type": "shell",
+      "command": "pipenv run python -i -m plugins.nvda.test.harness.testFromTerminal",
+      "options": { "cwd": "${workspaceFolder}/packages/" },
+      "presentation": {
+        "reveal": "always",
+        "group": "nvdaPluginTestHarness"
+      }
+    },
+    {
+      "label": "Start NVDA plugin test harness receiver",
+      "type": "shell",
+      "command": "pipenv run python -i -m plugins.nvda.test.harness.outputReceiver",
+      "options": { "cwd": "${workspaceFolder}/packages/" },
+      "presentation": {
+        "reveal": "always",
+        "group": "nvdaPluginTestHarness"
+      }
     }
   ]
 }
