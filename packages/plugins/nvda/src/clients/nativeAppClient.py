@@ -2,7 +2,7 @@ from multiprocessing.connection import Client
 
 import asyncio
 from rx.subject import Subject
-from rx.operators import map, combine_latest
+from rx.operators import map, with_latest_from
 
 from plugins.nvda.src.commConstants import OutputKeys
 from plugins.nvda.src.plugin import rehydrateMessage
@@ -21,7 +21,7 @@ class _NativeAppClient:
 
         self.__connectionStatusStream = Subject()
 
-        self.__speechStream = combine_latest(
+        self.__speechStream = with_latest_from(
             self.__rawPluginOutputStream, self.__connectionStatusStream
         ).pipe(map(lambda combinedTuple: {**combinedTuple[0], **combinedTuple[1]}))
 
@@ -70,10 +70,6 @@ class _NativeAppClient:
                 try:
                     dehydratedMsgDict = self.__serverConnection.recv()
                     self.__rawPluginOutputStream.on_next(dehydratedMsgDict)
-
-                    self.__connectionStatusStream.on_next(
-                        {OutputKeys.IS_CONNECTED: True}
-                    )
 
                 except ConnectionResetError:  # If NVDA/the plugin is terminated
                     self.__connectionStatusStream.on_next(
