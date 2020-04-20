@@ -2,7 +2,7 @@ from multiprocessing.connection import Client
 
 import asyncio
 from rx.subject import Subject
-from rx.operators import map, with_latest_from
+from rx.operators import map, with_latest_from, merge
 
 from plugins.nvda.src.commConstants import OutputKeys
 from plugins.nvda.src.plugin import rehydrateMessage
@@ -23,7 +23,10 @@ class _NativeAppClient:
 
         self.__speechStream = with_latest_from(
             self.__rawPluginOutputStream, self.__connectionStatusStream
-        ).pipe(map(lambda combinedTuple: {**combinedTuple[0], **combinedTuple[1]}))
+        ).pipe(
+            map(lambda combinedTuple: {**combinedTuple[0], **combinedTuple[1]}),
+            merge(self.__connectionStatusStream),
+        )
 
         # TODO - need to trigger NVDA to startup, if it isn't already
         #      - first need to check if NVDA is installed + if the plugin is
