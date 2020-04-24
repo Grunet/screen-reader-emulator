@@ -15,14 +15,13 @@ _PADDING_FOR_NVDA_STARTUP_TIME = 1
 class _NativeAppClient:
     def __init__(self):
         self.__rawPluginOutputStream = Subject()
-        self.__rawPluginOutputStream.pipe(
-            map(lambda dehydratedMsgDict: rehydrateMessage(dehydratedMsgDict))
-        )
-
         self.__connectionStatusStream = Subject()
 
         self.__speechStream = with_latest_from(
-            self.__rawPluginOutputStream, self.__connectionStatusStream
+            self.__rawPluginOutputStream.pipe(
+                map(lambda dehydratedMsgDict: rehydrateMessage(dehydratedMsgDict))
+            ),
+            self.__connectionStatusStream,
         ).pipe(
             map(lambda combinedTuple: {**combinedTuple[0], **combinedTuple[1]}),
             merge(self.__connectionStatusStream),
