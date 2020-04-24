@@ -1,4 +1,5 @@
 from multiprocessing.connection import Client
+from pprint import pprint
 
 from plugins.nvda.src.commConstants import _address, _authkey
 
@@ -8,4 +9,4 @@ conn = Client(_address, authkey=_authkey)
 while True:
     output = conn.recv()
 
-    print(output)
+    pprint(output, width=1)  # Wraps lines of a dictionary
