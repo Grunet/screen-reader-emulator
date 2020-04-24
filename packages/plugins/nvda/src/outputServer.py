@@ -4,6 +4,8 @@ from collections import deque
 
 from plugins.nvda.src.commConstants import _address, _authkey
 
+_MAX_NUM_UNSENT_MESSAGES = 100
+
 
 class _OutputServer:
     def __init__(self):
@@ -35,7 +37,7 @@ class _OutputServer:
         try:
             self.__unsentMsgs
         except AttributeError:
-            self.__unsentMsgs = deque()
+            self.__unsentMsgs = deque(maxlen=_MAX_NUM_UNSENT_MESSAGES)
 
         self.__unsentMsgs.append(msg)
 
