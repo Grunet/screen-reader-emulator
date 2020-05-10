@@ -29,41 +29,7 @@ def build(c):
 
     __updatePythonImportsForNVDA(outDir)
 
-    paths = list()
-    for path in outDir.glob("**/*.py"):
-        fileText = path.read_text()
-
-        if "class GlobalPlugin" in fileText:
-            paths.append(path)
-
-    if len(paths) <= 0:
-        raise Exception("No file declaring a GlobalPlugin class was found")
-    elif len(paths) >= 2:
-        raise Exception("More than 1 file declaring a GlobalPlugin class was found")
-
-    srcEntryPointPath = paths[0]
-
-    # Trying to avoid any unexpected direct imports (see https://github.com/nvaccess/nvda/blob/23ad41e62dd24bad60c1fe61cf70e59b43e6d39c/source/globalPluginHandler.py for where this check is made) # noqa
-    hiddenEntryPointName = "_" + srcEntryPointPath.name
-    hiddenEntryPointPath = srcEntryPointPath.with_name(hiddenEntryPointName)
-    srcEntryPointPath.rename(hiddenEntryPointPath)
-
-    hiddenEntryPointModuleName = hiddenEntryPointPath.stem
-
-    exposedEntryPointPath = (
-        outDir / "globalPlugins" / "entryPoint.py"
-    )  # TODO - The "globalPlugins" string is duplicated below
-    shutil.copyfile(
-        Path(__file__).parent / "dependencyAdapter.py", exposedEntryPointPath,
-    )
-
-    placeholderCode = exposedEntryPointPath.read_text()
-
-    codeReferencingHiddenEntryPoint = placeholderCode.replace(
-        "filenameOfEntryPoint", hiddenEntryPointModuleName
-    )
-
-    exposedEntryPointPath.write_text(codeReferencingHiddenEntryPoint)
+    __copyDependencyAdapter(outDir, Path(__file__).parent / "dependencyAdapter.py")
 
     readMeOutFilename = __convertReadMeToHtml(outDir, pkgDir / "readme.md")
 
@@ -124,6 +90,57 @@ def __updatePythonImportsForNVDA(outDir):
         updatedText = fileText.replace("from plugins.nvda.src.", "from .")
 
         path.write_text(updatedText)
+
+
+def __copyDependencyAdapter(outDir, pathToDependencyAdapter):
+    origEntryPointPath = __findPathToOriginalEntryPoint(outDir)
+
+    hiddenEntryPointPath = __hideOriginalEntryPointFromNVDA(origEntryPointPath)
+
+    exposedEntryPointPath = (
+        outDir / "globalPlugins" / "entryPoint.py"
+    )  # TODO - The "globalPlugins" string is duplicated below
+    shutil.copyfile(
+        pathToDependencyAdapter, exposedEntryPointPath,
+    )
+
+    __updateDependencyAdapterPlaceholders(
+        exposedEntryPointPath, hiddenEntryPointPath.stem
+    )
+
+
+def __findPathToOriginalEntryPoint(outDir):
+    paths = list()
+    for path in outDir.glob("**/*.py"):
+        fileText = path.read_text()
+
+        if "class GlobalPlugin" in fileText:
+            paths.append(path)
+
+    if len(paths) <= 0:
+        raise Exception("No file declaring a GlobalPlugin class was found")
+    elif len(paths) >= 2:
+        raise Exception("More than 1 file declaring a GlobalPlugin class was found")
+
+    return paths[0]
+
+
+def __hideOriginalEntryPointFromNVDA(origEntryPointPath):
+    # Trying to avoid any unexpected direct imports by NVDA (see https://github.com/nvaccess/nvda/blob/23ad41e62dd24bad60c1fe61cf70e59b43e6d39c/source/globalPluginHandler.py for where this check is made) # noqa
+    hiddenEntryPointName = "_" + origEntryPointPath.name
+    hiddenEntryPointPath = origEntryPointPath.with_name(hiddenEntryPointName)
+
+    origEntryPointPath.rename(hiddenEntryPointPath)
+
+    return hiddenEntryPointPath
+
+
+def __updateDependencyAdapterPlaceholders(dependencyAdapterPath, wrappedModuleName):
+    placeholderCode = dependencyAdapterPath.read_text()
+
+    populatedCode = placeholderCode.replace("filenameOfEntryPoint", wrappedModuleName)
+
+    dependencyAdapterPath.write_text(populatedCode)
 
 
 def __excludeClientsFolder(path, names):
