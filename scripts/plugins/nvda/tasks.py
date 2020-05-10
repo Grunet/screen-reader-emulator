@@ -22,14 +22,17 @@ def clean(c):
 def build(c):
     outDir = findMatchingOutDir(__file__)
     outDir.mkdir(parents=True)
+    outPluginDir = outDir / "globalPlugins"
 
     pkgDir = findMatchingPkgDir(__file__)
 
-    __copySourceFiles(outDir, pkgDir / "src")
+    __copySourceFiles(outPluginDir, pkgDir / "src")
 
-    __updatePythonImportsForNVDA(outDir)
+    __updatePythonImportsForNVDA(outPluginDir)
 
-    __copyDependencyAdapter(outDir, Path(__file__).parent / "dependencyAdapter.py")
+    __copyDependencyAdapter(
+        outPluginDir, Path(__file__).parent / "dependencyAdapter.py"
+    )
 
     readMeOutFilename = __convertReadMeToHtml(outDir, pkgDir / "readme.md")
 
@@ -78,13 +81,17 @@ def start(c):
     )
 
 
-def __copySourceFiles(outDir, srcDir):
-    pluginDir = outDir / "globalPlugins"
-    shutil.copytree(srcDir, pluginDir, ignore=__excludeClientsFolder)
+def __copySourceFiles(outPluginDir, srcDir):
+    shutil.copytree(srcDir, outPluginDir, ignore=__excludeClientsFolder)
 
 
-def __updatePythonImportsForNVDA(outDir):
-    for path in outDir.glob("**/*.py"):
+def __excludeClientsFolder(path, names):
+    pathObj = Path(path)
+    return set(name for name in names if pathObj.stem == "src" and "clients" in name)
+
+
+def __updatePythonImportsForNVDA(outPluginDir):
+    for path in outPluginDir.glob("**/*.py"):
         fileText = path.read_text()
 
         updatedText = fileText.replace("from plugins.nvda.src.", "from .")
@@ -92,14 +99,12 @@ def __updatePythonImportsForNVDA(outDir):
         path.write_text(updatedText)
 
 
-def __copyDependencyAdapter(outDir, pathToDependencyAdapter):
-    origEntryPointPath = __findPathToOriginalEntryPoint(outDir)
+def __copyDependencyAdapter(outPluginDir, pathToDependencyAdapter):
+    origEntryPointPath = __findPathToOriginalEntryPoint(outPluginDir)
 
     hiddenEntryPointPath = __hideOriginalEntryPointFromNVDA(origEntryPointPath)
 
-    exposedEntryPointPath = (
-        outDir / "globalPlugins" / "entryPoint.py"
-    )  # TODO - The "globalPlugins" string is duplicated below
+    exposedEntryPointPath = outPluginDir / "entryPoint.py"
     shutil.copyfile(
         pathToDependencyAdapter, exposedEntryPointPath,
     )
@@ -141,11 +146,6 @@ def __updateDependencyAdapterPlaceholders(dependencyAdapterPath, wrappedModuleNa
     populatedCode = placeholderCode.replace("filenameOfEntryPoint", wrappedModuleName)
 
     dependencyAdapterPath.write_text(populatedCode)
-
-
-def __excludeClientsFolder(path, names):
-    pathObj = Path(path)
-    return set(name for name in names if pathObj.stem == "src" and "clients" in name)
 
 
 def __convertReadMeToHtml(outDir, readMeSrcPath):
