@@ -27,6 +27,12 @@ def build(c):
 
     __copySourceFiles(outDir, pkgDir / "src")
 
+    copiedPyFiles = outDir.glob("**/*.py")
+    for path in copiedPyFiles:
+        fileText = path.read_text()  # Reads entire file into memory
+        updatedText = fileText.replace("from plugins.nvda.src.", "from .")
+        path.write_text(updatedText)
+
     readMeOutFilename = __convertReadMeToHtml(outDir, pkgDir / "readme.md")
 
     __updateManifestPlaceholders(
