@@ -76,7 +76,12 @@ def start(c):
 
 def __copySourceFiles(outDir, srcDir):
     pluginDir = outDir / "globalPlugins"
-    shutil.copytree(srcDir, pluginDir)
+    shutil.copytree(srcDir, pluginDir, ignore=__excludeClientsFolder)
+
+
+def __excludeClientsFolder(path, names):
+    pathObj = Path(path)
+    return set(name for name in names if pathObj.stem == "src" and "clients" in name)
 
 
 def __convertReadMeToHtml(outDir, readMeSrcPath):
