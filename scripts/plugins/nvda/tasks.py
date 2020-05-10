@@ -27,11 +27,7 @@ def build(c):
 
     __copySourceFiles(outDir, pkgDir / "src")
 
-    copiedPyFiles = outDir.glob("**/*.py")
-    for path in copiedPyFiles:
-        fileText = path.read_text()  # Reads entire file into memory
-        updatedText = fileText.replace("from plugins.nvda.src.", "from .")
-        path.write_text(updatedText)
+    __updatePythonImportsForNVDA(outDir)
 
     readMeOutFilename = __convertReadMeToHtml(outDir, pkgDir / "readme.md")
 
@@ -83,6 +79,15 @@ def start(c):
 def __copySourceFiles(outDir, srcDir):
     pluginDir = outDir / "globalPlugins"
     shutil.copytree(srcDir, pluginDir, ignore=__excludeClientsFolder)
+
+
+def __updatePythonImportsForNVDA(outDir):
+    for path in outDir.glob("**/*.py"):
+        fileText = path.read_text()
+
+        updatedText = fileText.replace("from plugins.nvda.src.", "from .")
+
+        path.write_text(updatedText)
 
 
 def __excludeClientsFolder(path, names):
