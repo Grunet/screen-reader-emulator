@@ -24,9 +24,9 @@ def build(c):
     outDir.mkdir(parents=True)
     outPluginDir = outDir / "globalPlugins"
 
-    pkgDir = findMatchingPkgDir(__file__)
+    nvdaPluginDir = findMatchingPkgDir(__file__)
 
-    __copySourceFiles(outPluginDir, pkgDir / "src")
+    __copySourceFiles(outPluginDir, nvdaPluginDir / "src")
 
     __updatePythonImportsForNVDA(outPluginDir)
 
@@ -34,11 +34,11 @@ def build(c):
         outPluginDir, Path(__file__).parent / "dependencyAdapter.py"
     )
 
-    readMeOutFilename = __convertReadMeToHtml(outDir, pkgDir / "readme.md")
+    readMeOutFilename = __convertReadMeToHtml(outDir, nvdaPluginDir / "readme.md")
 
     __updateManifestPlaceholders(
         outDir,
-        pkgDir / "manifest.ini",
+        nvdaPluginDir / "manifest.ini",
         readMeOutFilename,
         constantsExtractor.getVersionNumber(),
     )
