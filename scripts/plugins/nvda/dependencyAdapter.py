@@ -4,6 +4,8 @@ import sys
 import os
 
 # Not deleting these after the plugin import in case of runtime imports later
+# In case of duplicates NVDA core should use modules from earlier in the sys.path list
+
 sys.path.append(os.path.join(os.path.dirname(__file__), partialPathToAppDependencies))
 
 from . import filenameOfEntryPoint
