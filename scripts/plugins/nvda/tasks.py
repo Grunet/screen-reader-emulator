@@ -9,6 +9,7 @@ import subprocess
 
 import constantsExtractor
 from dirFinder import findMatchingOutDir, findMatchingPkgDir
+from venvFinder import getPathToPkgDependencies
 
 
 @task
@@ -24,14 +25,19 @@ def build(c):
     outDir.mkdir(parents=True)
     outPluginDir = outDir / "globalPlugins"
 
-    nvdaPluginDir = findMatchingPkgDir(__file__)
+    nvdaPluginDir = findMatchingPkgDir(__file__)  # packages/plugins/nvda
+    pkgDir = nvdaPluginDir.parents[1]
 
     __copySourceFiles(outPluginDir, nvdaPluginDir / "src")
 
     __updatePythonImportsForNVDA(outPluginDir)
 
-    __copyDependencyAdapter(
+    pathToCopiedDependencyAdapter = __copyDependencyAdapter(
         outPluginDir, Path(__file__).parent / "dependencyAdapter.py"
+    )
+
+    __copyDependenciesFromVirtualEnv(
+        pkgDir, outPluginDir, pathToCopiedDependencyAdapter
     )
 
     readMeOutFilename = __convertReadMeToHtml(outDir, nvdaPluginDir / "readme.md")
@@ -113,6 +119,8 @@ def __copyDependencyAdapter(outPluginDir, pathToDependencyAdapter):
         exposedEntryPointPath, hiddenEntryPointPath.stem
     )
 
+    return exposedEntryPointPath
+
 
 def __findPathToOriginalEntryPoint(outDir):
     paths = list()
@@ -146,6 +154,25 @@ def __updateDependencyAdapterPlaceholders(dependencyAdapterPath, wrappedModuleNa
     populatedCode = placeholderCode.replace("filenameOfEntryPoint", wrappedModuleName)
 
     dependencyAdapterPath.write_text(populatedCode)
+
+
+def __copyDependenciesFromVirtualEnv(pkgDir, outPluginDir, pathToDependencyAdapter):
+    absPathToDependencies = getPathToPkgDependencies(pkgDir)
+
+    partialPathToCopiedDependencies = Path("dependencies", "virtualenv")
+
+    shutil.copytree(
+        absPathToDependencies, outPluginDir / partialPathToCopiedDependencies
+    )
+
+    placeholderCode = pathToDependencyAdapter.read_text()
+
+    populatedCode = placeholderCode.replace(
+        "partialPathToAppDependencies",
+        '"' + str(partialPathToCopiedDependencies) + '"',
+    )
+
+    pathToDependencyAdapter.write_text(populatedCode)
 
 
 def __convertReadMeToHtml(outDir, readMeSrcPath):
