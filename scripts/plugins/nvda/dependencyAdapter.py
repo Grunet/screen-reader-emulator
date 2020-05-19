@@ -1,3 +1,5 @@
+# Dependency handling based on https://nvda-addons.groups.io/g/nvda-addons/topic/how_to_import_an_external/25136329?p=,,,20,0,0,0::recentpostdate%2Fsticky,,,20,2,0,25136329 # noqa
+
 import sys
 import os
 
