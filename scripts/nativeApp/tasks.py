@@ -61,9 +61,7 @@ def __excludeNonNativeAppRelatedSrcFiles(path, names):
 
 def __createExeFromCopiedSrc(rootDir, pkgDir, relPathToEntryPoint):
 
-    absPathToPkgVirtualEnv = __getPathToPkgVirtualEnv(pkgDir)
-
-    absPathToDependencies = absPathToPkgVirtualEnv / "Lib" / "site-packages"
+    absPathToDependencies = getPathToPkgDependencies(pkgDir)
 
     subprocess.call(
         [
@@ -76,6 +74,14 @@ def __createExeFromCopiedSrc(rootDir, pkgDir, relPathToEntryPoint):
     )
 
     return __getPathToExe(rootDir, relPathToEntryPoint)
+
+
+def getPathToPkgDependencies(pkgDir):
+    absPathToPkgVirtualEnv = __getPathToPkgVirtualEnv(pkgDir)
+
+    absPathToDependencies = absPathToPkgVirtualEnv / "Lib" / "site-packages"
+
+    return absPathToDependencies
 
 
 def __getPathToPkgVirtualEnv(pkgDir):
@@ -157,4 +163,3 @@ def __createRefToManifest(manifestName, pathToManifest):
 
     else:
         raise NotImplementedError("The build step currently only works on Windows")
-
