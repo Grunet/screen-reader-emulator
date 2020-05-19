@@ -115,8 +115,10 @@ def __copyDependencyAdapter(outPluginDir, pathToDependencyAdapter):
         pathToDependencyAdapter, exposedEntryPointPath,
     )
 
-    __updateDependencyAdapterPlaceholders(
-        exposedEntryPointPath, hiddenEntryPointPath.stem
+    __populateDependencyAdapterPlaceholder(
+        exposedEntryPointPath,
+        placeholderText="filenameOfEntryPoint",
+        replacementText=hiddenEntryPointPath.stem,
     )
 
     return exposedEntryPointPath
@@ -148,14 +150,6 @@ def __hideOriginalEntryPointFromNVDA(origEntryPointPath):
     return hiddenEntryPointPath
 
 
-def __updateDependencyAdapterPlaceholders(dependencyAdapterPath, wrappedModuleName):
-    placeholderCode = dependencyAdapterPath.read_text()
-
-    populatedCode = placeholderCode.replace("filenameOfEntryPoint", wrappedModuleName)
-
-    dependencyAdapterPath.write_text(populatedCode)
-
-
 def __copyDependenciesFromVirtualEnv(pkgDir, outPluginDir, pathToDependencyAdapter):
     absPathToDependencies = getPathToPkgDependencies(pkgDir)
 
@@ -165,12 +159,19 @@ def __copyDependenciesFromVirtualEnv(pkgDir, outPluginDir, pathToDependencyAdapt
         absPathToDependencies, outPluginDir / partialPathToCopiedDependencies
     )
 
+    __populateDependencyAdapterPlaceholder(
+        pathToDependencyAdapter,
+        placeholderText="partialPathToAppDependencies",
+        replacementText='"' + str(partialPathToCopiedDependencies) + '"',
+    )
+
+
+def __populateDependencyAdapterPlaceholder(
+    pathToDependencyAdapter, placeholderText, replacementText
+):
     placeholderCode = pathToDependencyAdapter.read_text()
 
-    populatedCode = placeholderCode.replace(
-        "partialPathToAppDependencies",
-        '"' + str(partialPathToCopiedDependencies) + '"',
-    )
+    populatedCode = placeholderCode.replace(placeholderText, replacementText)
 
     pathToDependencyAdapter.write_text(populatedCode)
 
