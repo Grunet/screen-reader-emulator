@@ -23,7 +23,7 @@
     "slash": "^3.0.0",
     "web-ext": "^4.2.0",
     "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11",
+    "webpack-cli": "^3.3.12",
     "webpack-stream": "^5.2.1"
   }
 }
