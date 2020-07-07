@@ -13,7 +13,7 @@
   },
   "homepage": "https://github.com/Grunet/screen-reader-emulator#readme",
   "devDependencies": {
-    "eslint": "^7.3.0",
+    "eslint": "^7.4.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.20.0",
