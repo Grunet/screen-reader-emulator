@@ -1,4 +1,3 @@
-
 # Keys and values for the (dictionary) output messages
 from enum import Enum
 
@@ -17,4 +16,4 @@ class SpeechViewerStates(Enum):
 _PORT_FOR_NVDA = 25111  # a11y -> y11a -> 25111, arbitrary otherwise
 
 _address = ("localhost", _PORT_FOR_NVDA)
-_authkey = b'NVDA authentication key'  # for extra confirmation, not security
+_authkey = b"NVDA authentication key"  # for extra confirmation, not security

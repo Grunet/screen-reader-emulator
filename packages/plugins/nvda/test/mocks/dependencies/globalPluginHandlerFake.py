@@ -1,3 +1,2 @@
-
 class GlobalPlugin:
     pass

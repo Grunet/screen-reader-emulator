@@ -39,7 +39,8 @@ class _SpeechViewerMonitor:
                 self.__stateStream.on_next(SpeechViewerStates.INACTIVE)
             else:
                 self.__nvdaModules["speechViewer"]._guiFrame.textCtrl.Bind(
-                    self.__nvdaModules["wx"].EVT_TEXT, self.__monitorTextChangeHandler,
+                    self.__nvdaModules["wx"].EVT_TEXT,
+                    self.__monitorTextChangeHandler,
                 )
 
                 self.__nvdaModules["speechViewer"]._guiFrame.textCtrl.Bind(

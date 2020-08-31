@@ -112,7 +112,8 @@ def __copyDependencyAdapter(outPluginDir, pathToDependencyAdapter):
 
     exposedEntryPointPath = outPluginDir / "entryPoint.py"
     shutil.copyfile(
-        pathToDependencyAdapter, exposedEntryPointPath,
+        pathToDependencyAdapter,
+        exposedEntryPointPath,
     )
 
     __populateDependencyAdapterPlaceholder(
