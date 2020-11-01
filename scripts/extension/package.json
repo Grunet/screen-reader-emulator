@@ -22,7 +22,7 @@
     "merge-stream": "^2.0.0",
     "slash": "^3.0.0",
     "web-ext": "^5.0.0",
-    "webpack": "^4.44.1",
+    "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12",
     "webpack-stream": "^6.1.0"
   }
