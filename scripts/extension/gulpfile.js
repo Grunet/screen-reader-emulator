@@ -1,7 +1,7 @@
 const { src, dest, series } = require("gulp");
 const mergeStream = require("merge-stream");
-const webpack = require("webpack");
 const webpackStream = require("webpack-stream");
+const webpack = require("webpack-stream/node_modules/webpack"); //Pulling in v5 webpack directly (vs webpack-stream's v4 webpack dependency) causes an error with DefinePlugin's substitutions
 const jeditor = require("gulp-json-editor");
 const template = require("gulp-template");
 const rename = require("gulp-rename");
