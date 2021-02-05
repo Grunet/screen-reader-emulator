@@ -22,6 +22,6 @@
     "merge-stream": "^2.0.0",
     "slash": "^3.0.0",
     "web-ext": "^5.5.0",
-    "webpack-stream": "^6.1.1"
+    "webpack-stream": "^6.1.2"
   }
 }
