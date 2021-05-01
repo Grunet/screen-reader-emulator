@@ -1,0 +1,52 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: monthly
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: eslint
+    versions:
+    - 7.16.0
+  - dependency-name: eslint-config-prettier
+    versions:
+    - 7.1.0
+- package-ecosystem: pip
+  directory: "/"
+  schedule:
+    interval: monthly
+  open-pull-requests-limit: 10
+- package-ecosystem: npm
+  directory: "/packages"
+  schedule:
+    interval: monthly
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: rxjs
+    versions:
+    - 6.6.6
+- package-ecosystem: pip
+  directory: "/packages"
+  schedule:
+    interval: monthly
+  open-pull-requests-limit: 10
+- package-ecosystem: npm
+  directory: "/scripts/extension"
+  schedule:
+    interval: monthly
+  open-pull-requests-limit: 10
+- package-ecosystem: pip
+  directory: "/scripts/nativeApp"
+  schedule:
+    interval: monthly
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: pyinstaller
+    versions:
+    - "4.1"
+- package-ecosystem: pip
+  directory: "/scripts/plugins/nvda"
+  schedule:
+    interval: monthly
+  open-pull-requests-limit: 10
