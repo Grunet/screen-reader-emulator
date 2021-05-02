@@ -6,12 +6,13 @@
   },
   "author": "Sadik Shahidain",
   "license": "MIT",
+  "type": "module",
   "dependencies": {
     "rxjs": "^7.0.0"
   },
   "devDependencies": {
     "express": "^4.17.1",
     "lodash.trimend": "^4.5.1",
-    "slash": "^3.0.0"
+    "slash": "^4.0.0"
   }
 }

@@ -1,13 +1,15 @@
-const path = require("path");
-const fs = require("fs");
+import path from "path";
+import { fileURLToPath } from "url";
+import fs from "fs";
 
-const express = require("express");
-const slash = require("slash");
-const trimEnd = require("lodash.trimEnd");
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+import express from "express";
+import slash from "slash";
+import trimEnd from "lodash.trimEnd";
 
 const app = express();
 const port = 8000;
-
 const staticAssetsRootDir = path.resolve(path.join(__dirname, "../../../../"));
 
 app.get("/", (req, res) => {
