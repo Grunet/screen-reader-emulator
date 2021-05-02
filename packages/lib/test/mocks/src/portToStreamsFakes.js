@@ -1,4 +1,4 @@
-import { Subject } from "../../../../node_modules/rxjs/_esm2015/index.js"; //Workaround for https://github.com/ReactiveX/rxjs/issues/4416
+import { Subject } from "../../../../node_modules/rxjs/dist/esm/index.js"; //Workaround for https://github.com/ReactiveX/rxjs/issues/4416
 
 class InteractiveFake {
   constructor(globalPropName) {
