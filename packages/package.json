@@ -13,6 +13,6 @@
   "devDependencies": {
     "express": "^4.17.1",
     "lodash.trimend": "^4.5.1",
-    "slash": "^4.0.0"
+    "slash": "^5.0.0"
   }
 }
